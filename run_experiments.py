@@ -4,6 +4,13 @@ import sys
 import subprocess
 import matplotlib.pyplot as plt
 
+try:
+    min_scale = int(sys.argv[1])
+    max_scale = int(sys.argv[2])
+except Exception:
+    sys.stderr.write(f"Usage: {sys.argv[0]} <min scale (int)> <max scale (int)>")
+    sys.exit(1)
+
 num_cores_per_host = 8
 min_core_speed = 100
 max_core_speed = 200
@@ -24,9 +31,11 @@ versions = ["v3_14", "v3_34"]
 results = {}
 for version in versions:
     results[version] = {}
-    # RUN EXPERIMENT
-    for scale in scales:
 
+for scale in scales:
+    for version in versions:
+
+        # RUN EXPERIMENT
         num_hosts = 2 ** scale
         num_tasks = num_hosts * 20
         num_workers = num_hosts * num_cores_per_host
@@ -95,7 +104,7 @@ lns = lns_handles[0] + lns_handles[1] + lns_handles[2] + lns_handles[3]
 labs = [l.get_label() for l in lns]
 ax1.legend(lns, labs, loc=0, fontsize=fontsize)
 
-figname = f"simgrid_v3_14.pdf"
+figname = f"simgrid_master_worker_{scales[0]}_{scales[-1]}.pdf"
 plt.savefig(figname)
 print("***********************************")
 print("RESULT FIGURE SAVED TO: " + figname)

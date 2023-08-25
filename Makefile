@@ -1,5 +1,7 @@
 .NOTPARALLEL:
 
+MIN_SCALE=5
+MAX_SCALE=10
 
 default: 
 	docker build -t simgrid_v3_14 -f Dockerfile_simgrid_v3_14  .
@@ -12,5 +14,5 @@ default:
 	mkdir build_simgrid_v3_34
 	docker run -it --rm -v `pwd`:/home/simgrid -w /home/simgrid/build_simgrid_v3_34/ simgrid_v3_34 cmake ..
 	docker run -it --rm -v `pwd`:/home/simgrid -w /home/simgrid/build_simgrid_v3_34/ simgrid_v3_34 make master_worker_v3_34
-	python3 ./run_experiments.py
+	python3 ./run_experiments.py ${MIN_SCALE} ${MAX_SCALE}
 
