@@ -31,10 +31,10 @@ will:
   - run a set of experiments that produce a result figure in PDF, using whatever was build last. 
 
 
-These experiments are for some default sets of numbers of hosts and numbers of trials (as encoded in the Makefile). These can be changed by typing, for instance:
+These experiments are for some default sets of numbers of workers and numbers of trials (as encoded in the Makefile). These can be changed by typing, for instance:
 
 ```
-make MIN_HOSTS=1000 MAX_HOSTS=10000 STEP_HOSTS=500 NUM_TRIALS=10 run
+make MIN_WORKERS=1000 MAX_WORKERS=50000 STEP_WORKERS=1000 NUM_TRIALS=10 run
 ```
 
 
