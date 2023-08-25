@@ -1,8 +1,8 @@
 .NOTPARALLEL:
 
-MIN_HOSTS=1000
-MAX_HOSTS=10000
-STEP_HOSTS=1000
+MIN_WORKERS=1000
+MAX_WORKERS=10000
+STEP_WORKERS=1000
 NUM_TRIALS=5
 
 default:
@@ -20,7 +20,7 @@ build: clean
 	docker run -it --rm -v `pwd`:/home/simgrid -w /home/simgrid/build_simgrid_v3_34/ simgrid_v3_34 make master_worker_v3_34
 
 run:
-	python3 ./run_experiments.py ${MIN_HOSTS} ${MAX_HOSTS} ${STEP_HOSTS} ${NUM_TRIALS}
+	python3 ./run_experiments.py ${MIN_WORKERS} ${MAX_WORKERS} ${STEP_WORKERS} ${NUM_TRIALS}
 
 
 clean:

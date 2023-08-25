@@ -5,12 +5,12 @@ import subprocess
 import matplotlib.pyplot as plt
 
 try:
-    min_num_hosts = int(sys.argv[1])
-    max_num_hosts = int(sys.argv[2])
-    step_num_hosts = int(sys.argv[3])
+    min_num_workers = int(sys.argv[1])
+    max_num_workers = int(sys.argv[2])
+    step_num_workers = int(sys.argv[3])
     num_trials = int(sys.argv[4])
 except Exception:
-    sys.stderr.write(f"Usage: {sys.argv[0]} <min num hosts (int)> <max num hosts (int)> <step num hosts (int)> <num trials (int)>\n")
+    sys.stderr.write(f"Usage: {sys.argv[0]} <min num workers (int)> <max num workers (int)> <step num workers (int)> <num trials (int)>\n")
     sys.exit(1)
 
 num_cores_per_host = 8
@@ -33,16 +33,16 @@ results = {}
 for version in versions:
     results[version] = {}
 
-num_hosts_values = range(min_num_hosts, max_num_hosts+1, step_num_hosts)
+num_workers_values = range(min_num_workers, max_num_workers+1, step_num_workers)
 
-for num_hosts in num_hosts_values:
+for num_workers in num_workers_values:
     for version in versions:
 
         # RUN EXPERIMENT
-        num_tasks = num_hosts * 200
-        num_workers = num_hosts * num_cores_per_host
+        num_tasks = num_workers * 200
+        num_hosts = int(1 + num_workers / num_cores_per_host)
 
-        sys.stderr.write(f"Runing with {num_tasks} tasks...\n")
+        sys.stderr.write(f"Running with {num_workers} workers...\n")
         times = []
         mems = []
         for seed in range(0, num_trials):
@@ -59,7 +59,7 @@ for num_hosts in num_hosts_values:
                     tokens = line.split(":")
                     mems.append(float(tokens[-1]) / 1024.0)
 
-        results[version][num_hosts] = [times, mems]
+        results[version][num_workers] = [times, mems]
 
 # PLOT RESULTS
 fontsize = 12
@@ -75,26 +75,27 @@ for version in versions:
     else:
         line_style = "-"
 
-    average_times = [sum(results[version][x][0]) / len(results[version][x][0]) for x in num_hosts_values]
+    average_times = [sum(results[version][x][0]) / len(results[version][x][0]) for x in num_workers_values]
 
-    lns1 = ax1.plot(num_hosts_values, average_times, 'or'+line_style, linewidth=2, label="Simulation Time " + version)
-    for num_hosts in num_hosts_values:
-        print(f"NUM_HOSTS: {num_hosts}")
-        for time in results[version][num_hosts][0]:
-            print(f"  - DATA POINT FOR TIME: {time}\n")
-            ax1.plot([num_hosts], [time], 'xr', linewidth=2)
+    lns1 = ax1.plot(num_workers_values, average_times, 'or'+line_style, linewidth=2, label="Simulation Time " + version)
+    for num_workers in num_workers_values:
+        print(f"NUM_HOSTS: {num_workers}")
+        for time in results[version][num_workers][0]:
+            print(f"  - {version} DATA POINT FOR TIME: {time}")
+            ax1.plot([num_workers], [time], 'xr', linewidth=2)
 
-    average_footprints = [sum(results[version][x][1]) / len(results[version][x][1]) for x in num_hosts_values]
+    average_footprints = [sum(results[version][x][1]) / len(results[version][x][1]) for x in num_workers_values]
 
-    lns2 = ax2.plot(num_hosts_values, average_footprints, 'ob'+line_style, linewidth=2, label="Maximum RSS " + version)
-    for num_hosts in num_hosts_values:
-        for footprint in results[version][num_hosts][1]:
-            ax2.plot([num_hosts], [footprint], 'xb', linewidth=2)
+    lns2 = ax2.plot(num_workers_values, average_footprints, 'ob'+line_style, linewidth=2, label="Maximum RSS " + version)
+    for num_workers in num_workers_values:
+        for footprint in results[version][num_workers][1]:
+            print(f"  - {version} DATA POINT FOR FOOTPRINT: {footprint}")
+            ax2.plot([num_workers], [footprint], 'xb', linewidth=2)
 
     lns_handles.append(lns1)
     lns_handles.append(lns2)
 
-ax1.set_xlabel("Number of hosts", fontsize=fontsize + 1)
+ax1.set_xlabel("Number of workers", fontsize=fontsize + 1)
 ax1.set_ylabel("Time (sec)", fontsize=fontsize + 1)
 ax2.set_ylabel("Memory Footprint (MB)", fontsize=fontsize + 1)
 
@@ -106,7 +107,7 @@ lns = lns_handles[0] + lns_handles[1] + lns_handles[2] + lns_handles[3]
 labs = [l.get_label() for l in lns]
 ax1.legend(lns, labs, loc=0, fontsize=fontsize)
 
-figname = f"simgrid_master_worker_{num_hosts_values[0]}_{num_hosts_values[-1]}.pdf"
+figname = f"simgrid_master_worker_{num_workers_values[0]}_{num_workers_values[-1]}.pdf"
 plt.savefig(figname)
 print("***********************************")
 print("RESULT FIGURE SAVED TO: " + figname)
