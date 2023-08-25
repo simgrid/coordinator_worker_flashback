@@ -8,7 +8,7 @@ try:
     min_scale = int(sys.argv[1])
     max_scale = int(sys.argv[2])
 except Exception:
-    sys.stderr.write(f"Usage: {sys.argv[0]} <min scale (int)> <max scale (int)>")
+    sys.stderr.write(f"Usage: {sys.argv[0]} <min scale (int)> <max scale (int)>\n")
     sys.exit(1)
 
 num_cores_per_host = 8
@@ -69,9 +69,9 @@ lns_handles = []
 
 for version in versions:
     if version == "v3_14":
-        line_style = "-"
+        line_style = "."
     else:
-        line_style = "--"
+        line_style = "-"
 
     average_times = [sum(results[version][x][0]) / len(results[version][x][0]) for x in scales]
 
