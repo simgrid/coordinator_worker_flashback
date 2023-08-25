@@ -1,0 +1,35 @@
+FROM amd64/ubuntu:jammy
+
+MAINTAINER Henri Casanova <henric@hawaii.edu>
+
+RUN apt-get update
+
+# install languages
+RUN apt-get -y install g++
+RUN apt-get -y install python3
+
+# build environment
+RUN apt-get -y install pkg-config 
+RUN apt-get -y install wget
+RUN apt-get -y install cmake
+RUN apt-get -y install sudo
+
+# experimental environment
+RUN apt-get install -y time
+
+# install boost
+RUN apt-get -y install libboost-all-dev
+
+# install doxygen
+RUN apt-get -y install doxygen 
+
+# install SimGrid
+RUN wget --no-check-certificate https://framagit.org/simgrid/simgrid/-/archive/v3.34/simgrid-v3.34.tar.gz && tar -xf simgrid-v3.34.tar.gz && cd simgrid-v3.34 && cmake . && make -j12 && sudo make install && cd .. && rm -rf simgrid-v3.34*
+
+# Add user
+RUN useradd -ms /bin/bash simgrid
+RUN adduser simgrid sudo
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+USER simgrid
+WORKDIR /home/simgrid
