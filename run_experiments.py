@@ -96,5 +96,6 @@ labs = [l.get_label() for l in lns]
 ax1.legend(lns, labs, loc=0, fontsize=fontsize)
 
 figname = f"simgrid_v3_14.pdf"
-print("Saving " + figname)
 plt.savefig(figname)
+print("***********************************")
+print("RESULT FIGURE SAVED TO: " + figname)
