@@ -12,5 +12,5 @@ default:
 	mkdir build_simgrid_v3_34
 	docker run -it --rm -v `pwd`:/home/simgrid -w /home/simgrid/build_simgrid_v3_34/ simgrid_v3_34 cmake ..
 	docker run -it --rm -v `pwd`:/home/simgrid -w /home/simgrid/build_simgrid_v3_34/ simgrid_v3_34 make master_worker_v3_34
-	./run_experiments.py
+	python3 ./run_experiments.py
 
