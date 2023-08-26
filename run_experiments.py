@@ -54,6 +54,7 @@ for num_workers in num_workers_values:
             try:
                 output = subprocess.check_output(command, shell=True).decode('utf-8').splitlines()
             except Exception:
+                sys.stderr.write("Out of memory... aborting this experiment")
                 continue
             for line in output:
                 if "Elapsed (wall clock)" in line:
@@ -68,6 +69,7 @@ for num_workers in num_workers_values:
         else:
             results[version][num_workers] = [times, mems]
 
+
 # PLOT RESULTS
 fontsize = 12
 f, ax1 = plt.subplots(1, 1, sharey=True, figsize=(14, 7))
@@ -75,6 +77,8 @@ ax2 = ax1.twinx()
 plt.grid(axis='y')
 
 lns_handles = []
+
+print(results)
 
 for version in versions:
     if version == "v3_14":
