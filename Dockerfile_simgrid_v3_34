@@ -1,4 +1,4 @@
-FROM amd64/ubuntu:jammy
+FROM ubuntu:jammy
 
 MAINTAINER Henri Casanova <henric@hawaii.edu>
 
