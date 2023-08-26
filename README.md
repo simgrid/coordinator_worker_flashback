@@ -19,7 +19,7 @@ make build
 
 will:
   - build Docker images locally if needed; and
-  - build the two versions of the simulators using these images.
+  - build the simulators using these images.
 
 Typing
 
@@ -28,7 +28,7 @@ make run
 ```
 
 will:
-  - run a set of experiments that produce a result figure in PDF, using whatever was build last. 
+  - run a set of experiments to produce a result figure in PDF, using the simulators.
 
 
 These experiments are for some default sets of numbers of workers and numbers of trials (as encoded in the Makefile). These can be changed by typing, for instance:
