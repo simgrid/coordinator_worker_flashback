@@ -112,11 +112,17 @@ void create_platform_file(std::string filepath,
     fprintf(pf, "<zone id=\"world\" routing=\"Full\">\n\n");
 
     // Create master hosts
-    fprintf(pf, "  <host id=\"MasterHost\" speed=\"1Mf\" core=\"1\" />\n\n");
+    fprintf(pf, "  <host id=\"MasterHost\" speed=\"1Mf\" core=\"1\">\n\n");
+    fprintf(pf, "    <prop id=\"wattage_per_state\" value=\"100.0:93.33333333333333:200.0, 93.0:90.0:170.0, 90.0:90.0:150.0\" />\n");
+    fprintf(pf, "    <prop id=\"wattage_off\" value=\"10\" />\n");
+    fprintf(pf, "  </host>\n");
 
     // Create worker hosts
     for (int i=0; i < num_hosts; i++) {
-        fprintf(pf, "  <host id=\"WorkerHost-%d\" speed=\"%.2lfMf\" core=\"%d\" />\n", i, double_randfrom(min_core_speed, max_core_speed), num_cores_per_host);
+        fprintf(pf, "  <host id=\"WorkerHost-%d\" speed=\"%.2lfMf\" core=\"%d\">\n", i, double_randfrom(min_core_speed, max_core_speed), num_cores_per_host);
+        fprintf(pf, "    <prop id=\"wattage_per_state\" value=\"100.0:93.33333333333333:200.0, 93.0:90.0:170.0, 90.0:90.0:150.0\" />\n");
+        fprintf(pf, "    <prop id=\"wattage_off\" value=\"10\" />\n");
+        fprintf(pf, "  </host>\n");
     }
 
     // Create links

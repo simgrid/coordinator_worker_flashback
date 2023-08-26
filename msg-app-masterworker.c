@@ -108,11 +108,15 @@ void create_platform_file(char *filepath,
   fprintf(pf, "<AS id=\"AS0\" routing=\"Full\">\n\n");
   
   // Create master hosts
-  fprintf(pf, "  <host id=\"MasterHost\" speed=\"1Mf\" core=\"1\" />\n\n");
+  fprintf(pf, "  <host id=\"MasterHost\" speed=\"1Mf\" core=\"1\">\n");
+  fprintf(pf, "    <prop id=\"watt_per_state\" value=\"100.0:120.0:200.0, 93.0:110.0:170.0, 90.0:105.0:150.0\" /> <prop id=\"watt_off\" value=\"10\" />\n");
+  fprintf(pf, "  </host>\n");
 
   // Create worker hosts
   for (int i=0; i < num_hosts; i++) {
-    fprintf(pf, "  <host id=\"WorkerHost-%d\" speed=\"%.2lfMf\" core=\"%d\" />\n", i, double_randfrom(min_core_speed, max_core_speed), num_cores_per_host);
+    fprintf(pf, "  <host id=\"WorkerHost-%d\" speed=\"%.2lfMf\" core=\"%d\">\n", i, double_randfrom(min_core_speed, max_core_speed), num_cores_per_host);
+    fprintf(pf, "    <prop id=\"watt_per_state\" value=\"100.0:120.0:200.0, 93.0:110.0:170.0, 90.0:105.0:150.0\" /> <prop id=\"watt_off\" value=\"10\" />\n");
+    fprintf(pf, "  </host>\n");
   }
 
   // Create links
