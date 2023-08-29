@@ -91,9 +91,7 @@ for version in versions:
     lns1 = ax1.plot(num_workers_values, average_times, 'or' + line_style, linewidth=2,
                     label="Simulation Time " + version)
     for num_workers in num_workers_values:
-        print(f"NUM_HOSTS: {num_workers}")
         for time in results[version][num_workers][0]:
-            print(f"  - {version} DATA POINT FOR TIME: {time}")
             ax1.plot([num_workers], [time], 'xr', linewidth=2)
 
     average_footprints = [sum(results[version][x][1]) / len(results[version][x][1]) for x in num_workers_values]
@@ -102,7 +100,6 @@ for version in versions:
                     label="Maximum RSS " + version)
     for num_workers in num_workers_values:
         for footprint in results[version][num_workers][1]:
-            print(f"  - {version} DATA POINT FOR FOOTPRINT: {footprint}")
             ax2.plot([num_workers], [footprint], 'xb', linewidth=2)
 
     lns_handles.append(lns1)
@@ -122,5 +119,4 @@ ax1.legend(lns, labs, loc=0, fontsize=fontsize)
 
 figname = f"simgrid_master_worker_{num_workers_values[0]}_{num_workers_values[-1]}.pdf"
 plt.savefig(figname)
-print("***********************************")
-print("RESULT FIGURE SAVED TO: " + figname)
+print("Figure saved to: " + figname)
