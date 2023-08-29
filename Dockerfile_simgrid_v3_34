@@ -1,4 +1,5 @@
-FROM ubuntu:jammy
+#FROM ubuntu:jammy
+FROM debian:12
 
 MAINTAINER Henri Casanova <henric@hawaii.edu>
 
@@ -25,6 +26,7 @@ RUN apt-get -y install doxygen
 RUN wget --no-check-certificate https://framagit.org/simgrid/simgrid/-/archive/v3.34/simgrid-v3.34.tar.gz && tar -xf simgrid-v3.34.tar.gz && cd simgrid-v3.34 && cmake -Denable_smpi=off . && make -j12 && sudo make install && cd .. && rm -rf simgrid-v3.34*
 
 # Add user
+RUN apt-get install -y sudo
 RUN useradd -ms /bin/bash simgrid
 RUN adduser simgrid sudo
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
