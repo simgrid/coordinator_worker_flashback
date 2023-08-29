@@ -26,7 +26,7 @@ max_computation = 200
 min_data_size = 100
 max_data_size = 100
 
-versions = ["v3_14", "v3_34"]
+versions = ["v3_10", "v3_34"]
 
 stack_size_in_kb = 100
 
@@ -81,14 +81,14 @@ lns_handles = []
 print(results)
 
 for version in versions:
-    if version == "v3_14":
+    if version == "v3_10":
         line_style = ":"
     else:
         line_style = "-"
 
     average_times = [sum(results[version][x][0]) / len(results[version][x][0]) for x in num_workers_values]
 
-    lns1 = ax1.plot(num_workers_values, average_times, 'or' + line_style, linewidth=2,
+    lns1 = ax1.plot(num_workers_values, average_times, 'r' + line_style, linewidth=2,
                     label="Simulation Time " + version)
     for num_workers in num_workers_values:
         for time in results[version][num_workers][0]:
@@ -96,7 +96,7 @@ for version in versions:
 
     average_footprints = [sum(results[version][x][1]) / len(results[version][x][1]) for x in num_workers_values]
 
-    lns2 = ax2.plot(num_workers_values, average_footprints, 'ob' + line_style, linewidth=2,
+    lns2 = ax2.plot(num_workers_values, average_footprints, 'b' + line_style, linewidth=2,
                     label="Maximum RSS " + version)
     for num_workers in num_workers_values:
         for footprint in results[version][num_workers][1]:
