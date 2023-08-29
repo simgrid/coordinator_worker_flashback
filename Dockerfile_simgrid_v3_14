@@ -22,7 +22,7 @@ RUN apt-get -y install libboost-all-dev
 RUN apt-get -y install doxygen 
 
 # install SimGrid
-RUN wget --no-check-certificate https://framagit.org/simgrid/simgrid/-/archive/v3_14/simgrid-v3_14.tar.gz && tar -xf simgrid-v3_14.tar.gz && cd simgrid-v3_14 && head -39 ./src/kernel/context/Context.hpp > /tmp/Context.hpp && echo "#undef SIGSTKSZ" >> /tmp/Context.hpp && echo "#define SIGSTKSZ 20480" >> /tmp/Context.hpp && tail -153 ./src/kernel/context/Context.hpp >> /tmp/Context.hpp && /bin/mv /tmp/Context.hpp ./src/kernel/context/Context.hpp && mkdir build && cd build && cmake .. && make && make install && cd ../.. && /bin/rm -rf simgrid-*
+RUN wget --no-check-certificate https://framagit.org/simgrid/simgrid/-/archive/v3_14/simgrid-v3_14.tar.gz && tar -xf simgrid-v3_14.tar.gz && cd simgrid-v3_14 && head -39 ./src/kernel/context/Context.hpp > /tmp/Context.hpp && echo "#undef SIGSTKSZ" >> /tmp/Context.hpp && echo "#define SIGSTKSZ 20480" >> /tmp/Context.hpp && tail -153 ./src/kernel/context/Context.hpp >> /tmp/Context.hpp && /bin/mv /tmp/Context.hpp ./src/kernel/context/Context.hpp && mkdir build && cd build && cmake .. && make -j12  && make install && cd ../.. && /bin/rm -rf simgrid-*
 
 # Add user
 RUN apt-get install -y sudo
