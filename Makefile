@@ -10,10 +10,10 @@ default:
 	@echo "make run    : will run the experiment with whatever has been built last"
 
 build: clean
-	docker run -it --rm -v `pwd`:/home/simgrid -w /home/simgrid/build_simgrid_v3_10/ simgrid_v3_10 make master_worker_v3_10
 	docker build -t simgrid_v3_10 -f Dockerfile_simgrid_v3_10  .
 	mkdir build_simgrid_v3_10
 	docker run -it --rm -v `pwd`:/home/simgrid -w /home/simgrid/build_simgrid_v3_10/ simgrid_v3_10 cmake ..
+	docker run -it --rm -v `pwd`:/home/simgrid -w /home/simgrid/build_simgrid_v3_14/ simgrid_v3_14 make master_worker_v3_10
 	docker build -t simgrid_v3_14 -f Dockerfile_simgrid_v3_14  .
 	mkdir build_simgrid_v3_14
 	docker run -it --rm -v `pwd`:/home/simgrid -w /home/simgrid/build_simgrid_v3_14/ simgrid_v3_14 cmake ..
