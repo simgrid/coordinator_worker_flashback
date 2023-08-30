@@ -143,14 +143,13 @@ void create_platform_file(char *filepath,
   fprintf(pf, "<AS id=\"AS0\" routing=\"Full\">\n\n");
   
   // Create master hosts
-  fprintf(pf, "  <host id=\"MasterHost\" power=\"1Mf\" core=\"1\">\n");
-//  fprintf(pf, "    <prop id=\"watt_per_state\" value=\"100.0:120.0:200.0, 93.0:110.0:170.0, 90.0:105.0:150.0\" /> <prop id=\"watt_off\" value=\"10\" />\n");
+  fprintf(pf, "  <host id=\"MasterHost\" power=\"1Mf,0.5Mf,0.2Mf\" core=\"1\">\n");
   fprintf(pf, "  </host>\n");
 
   // Create worker hosts
   for (int i=0; i < num_hosts; i++) {
-    fprintf(pf, "  <host id=\"WorkerHost-%d\" power=\"%.2lfMf\" core=\"%d\">\n", i, double_randfrom(min_core_speed, max_core_speed), num_cores_per_host);
-//    fprintf(pf, "    <prop id=\"watt_per_state\" value=\"100.0:120.0:200.0, 93.0:110.0:170.0, 90.0:105.0:150.0\" /> <prop id=\"watt_off\" value=\"10\" />\n");
+    double core_speed = double_randfrom(min_core_speed, max_core_speed);
+    fprintf(pf, "  <host id=\"WorkerHost-%d\" power=\"%.2lfMf,%.2lfMf,%.2lfMf\" core=\"%d\">\n", i, core_speed, core_speed * 0.5, core_speed * 0.2, num_cores_per_host);
    fprintf(pf, "  </host>\n");
  }
 
