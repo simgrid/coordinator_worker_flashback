@@ -2,7 +2,7 @@
 
 ### Objective
 
-Compare the simulation time and memory footprint of the classical master-worker example provided in SimGrid distribution between different versions (currently 3.14 vs. 3.34)
+Compare the simulation time and memory footprint of the classical master-worker example provided in SimGrid distribution between different versions (currently 3.10 and 3.34)
 
 ### Requirements
 
