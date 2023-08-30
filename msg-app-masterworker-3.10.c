@@ -144,12 +144,14 @@ void create_platform_file(char *filepath,
   
   // Create master hosts
   fprintf(pf, "  <host id=\"MasterHost\" power=\"1Mf,0.5Mf,0.2Mf\" core=\"1\">\n");
+  fprintf(pf, "    <prop id=\"power_per_state\" value=\"95.0:200.0, 93.0:170.0, 90.0:150.0\" />\n");
   fprintf(pf, "  </host>\n");
 
   // Create worker hosts
   for (int i=0; i < num_hosts; i++) {
     double core_speed = double_randfrom(min_core_speed, max_core_speed);
     fprintf(pf, "  <host id=\"WorkerHost-%d\" power=\"%.2lfMf,%.2lfMf,%.2lfMf\" core=\"%d\">\n", i, core_speed, core_speed * 0.5, core_speed * 0.2, num_cores_per_host);
+  	fprintf(pf, "    <prop id=\"power_per_state\" value=\"95.0:200.0, 93.0:170.0, 90.0:150.0\" />\n");
    fprintf(pf, "  </host>\n");
  }
 
