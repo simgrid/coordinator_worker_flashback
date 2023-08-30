@@ -36,22 +36,22 @@ static int master(int argc, char *argv[])
   }
   /* Min/Max task compute cost    */ 
   double min_comp_size, max_comp_size;
-  if (sscanf(argv[2], "%lf", &min_comp_size) != 0) {
+  if (sscanf(argv[2], "%lf", &min_comp_size) != 1) {
 	 fprintf(stderr, "Invalid min computational size: %s", argv[2]);
 	 exit(1);
   }
-  if (sscanf(argv[3], "%lf", &max_comp_size) != 0) {
+  if (sscanf(argv[3], "%lf", &max_comp_size) != 1) {
 	 fprintf(stderr, "Invalid max computational size: %s", argv[3]);
 	 exit(1);
   }
 
   /* Min/Max task communication size    */ 
   double min_comm_size, max_comm_size;
-  if (sscanf(argv[4], "%lf", &min_comm_size) != 0) {
+  if (sscanf(argv[4], "%lf", &min_comm_size) != 1) {
 	 fprintf(stderr, "Invalid min commmunication size: %s", argv[4]);
 	 exit(1);
   }
-  if (sscanf(argv[5], "%lf", &max_comm_size) != 0) {
+  if (sscanf(argv[5], "%lf", &max_comm_size) != 1) {
 	 fprintf(stderr, "Invalid max communication size: %s", argv[5]);
 	 exit(1);
   }
@@ -138,21 +138,21 @@ void create_platform_file(char *filepath,
 
   // XML Header 
   fprintf(pf, "<?xml version='1.0'?>\n");
-  fprintf(pf, "<!DOCTYPE platform SYSTEM \"http://simgrid.gforge.inria.fr/simgrid/simgrid.dtd\">\n");
-  fprintf(pf, "<platform version=\"4\">\n");
+  fprintf(pf, "<!DOCTYPE platform SYSTEM \"http://simgrid.gforge.inria.fr/simgrid.dtd\">\n");
+  fprintf(pf, "<platform version=\"3\">\n");
   fprintf(pf, "<AS id=\"AS0\" routing=\"Full\">\n\n");
   
   // Create master hosts
-  fprintf(pf, "  <host id=\"MasterHost\" speed=\"1Mf\" core=\"1\">\n");
-  fprintf(pf, "    <prop id=\"watt_per_state\" value=\"100.0:120.0:200.0, 93.0:110.0:170.0, 90.0:105.0:150.0\" /> <prop id=\"watt_off\" value=\"10\" />\n");
+  fprintf(pf, "  <host id=\"MasterHost\" power=\"1Mf\" core=\"1\">\n");
+//  fprintf(pf, "    <prop id=\"watt_per_state\" value=\"100.0:120.0:200.0, 93.0:110.0:170.0, 90.0:105.0:150.0\" /> <prop id=\"watt_off\" value=\"10\" />\n");
   fprintf(pf, "  </host>\n");
 
   // Create worker hosts
   for (int i=0; i < num_hosts; i++) {
-    fprintf(pf, "  <host id=\"WorkerHost-%d\" speed=\"%.2lfMf\" core=\"%d\">\n", i, double_randfrom(min_core_speed, max_core_speed), num_cores_per_host);
-    fprintf(pf, "    <prop id=\"watt_per_state\" value=\"100.0:120.0:200.0, 93.0:110.0:170.0, 90.0:105.0:150.0\" /> <prop id=\"watt_off\" value=\"10\" />\n");
-    fprintf(pf, "  </host>\n");
-  }
+    fprintf(pf, "  <host id=\"WorkerHost-%d\" power=\"%.2lfMf\" core=\"%d\">\n", i, double_randfrom(min_core_speed, max_core_speed), num_cores_per_host);
+//    fprintf(pf, "    <prop id=\"watt_per_state\" value=\"100.0:120.0:200.0, 93.0:110.0:170.0, 90.0:105.0:150.0\" /> <prop id=\"watt_off\" value=\"10\" />\n");
+   fprintf(pf, "  </host>\n");
+ }
 
   // Create links
   fprintf(pf, "\n");
@@ -206,8 +206,8 @@ void create_deployment_file(char *filepath,
   FILE *df = fopen(filepath, "w");
   // XML Header 
   fprintf(df, "<?xml version='1.0'?>\n");
-  fprintf(df, "<!DOCTYPE platform SYSTEM \"http://simgrid.gforge.inria.fr/simgrid/simgrid.dtd\">\n");
-  fprintf(df, "<platform version=\"4\">\n");
+  fprintf(df, "<!DOCTYPE platform SYSTEM \"http://simgrid.gforge.inria.fr/simgrid.dtd\">\n");
+  fprintf(df, "<platform version=\"3\">\n");
   
   // Create master process 
   fprintf(df, "  <process host=\"MasterHost\" function=\"master\">\n");
@@ -261,21 +261,21 @@ int main(int argc, char *argv[])
  
   int seed;
 
-  xbt_assert(sscanf(argv[1], "%d", &num_hosts) == 1, "Invalid <#hosts> argument");
-  xbt_assert(sscanf(argv[2], "%d", &num_cores_per_host) == 1, "Invalid <#cores per host> argument");
-  xbt_assert(sscanf(argv[3], "%lf", &min_core_speed) == 1, "Invalid <min core speed (Mf)> argument");
-  xbt_assert(sscanf(argv[4], "%lf", &max_core_speed) == 1, "Invalid <max core speed (Mf)> argument");
-  xbt_assert(sscanf(argv[5], "%d", &num_links) == 1, "Invalid <#links> argument");
-  xbt_assert(sscanf(argv[6], "%lf", &min_link_bandwidth) == 1, "Invalid <min link bandwidth (MB)> argument");
-  xbt_assert(sscanf(argv[7], "%lf", &max_link_bandwidth) == 1, "Invalid <max link bandwidth (MB)> argument");
-  xbt_assert(sscanf(argv[8], "%d", &route_length) == 1, "Invalid <route length> argument");
-  xbt_assert(sscanf(argv[9], "%d", &num_workers) == 1, "Invalid <#workers> argument");
-  xbt_assert(sscanf(argv[10], "%d", &num_tasks) == 1, "Invalid <#tasks> argument");
-  xbt_assert(sscanf(argv[11], "%lf", &min_computation) == 1, "Invalid <min computation (Mf)> argument");
-  xbt_assert(sscanf(argv[12], "%lf", &max_computation) == 1, "Invalid <max computation (Mf)> argument");
-  xbt_assert(sscanf(argv[13], "%lf", &min_data_size) == 1, "Invalid <min data size (MB)> argument");
-  xbt_assert(sscanf(argv[14], "%lf", &max_data_size) == 1, "Invalid <max data size (MB)> argument");
-  xbt_assert(sscanf(argv[15], "%d", &seed) == 1, "Invalid <seed> argument");
+  xbt_assert(sscanf(argv[1], "%d", &num_hosts) == 1, "Invalid <#hosts> argument\n");
+  xbt_assert(sscanf(argv[2], "%d", &num_cores_per_host) == 1, "Invalid <#cores per host> argument\n");
+  xbt_assert(sscanf(argv[3], "%lf", &min_core_speed) == 1, "Invalid <min core speed (Mf)> argument\n");
+  xbt_assert(sscanf(argv[4], "%lf", &max_core_speed) == 1, "Invalid <max core speed (Mf)> argument\n");
+  xbt_assert(sscanf(argv[5], "%d", &num_links) == 1, "Invalid <#links> argument\n");
+  xbt_assert(sscanf(argv[6], "%lf", &min_link_bandwidth) == 1, "Invalid <min link bandwidth (MB)> argument\n");
+  xbt_assert(sscanf(argv[7], "%lf", &max_link_bandwidth) == 1, "Invalid <max link bandwidth (MB)> argument\n");
+  xbt_assert(sscanf(argv[8], "%d", &route_length) == 1, "Invalid <route length> argument\n");
+  xbt_assert(sscanf(argv[9], "%d", &num_workers) == 1, "Invalid <#workers> argument\n");
+  xbt_assert(sscanf(argv[10], "%d", &num_tasks) == 1, "Invalid <#tasks> argument\n");
+  xbt_assert(sscanf(argv[11], "%lf", &min_computation) == 1, "Invalid <min computation (Mf)> argument\n");
+  xbt_assert(sscanf(argv[12], "%lf", &max_computation) == 1, "Invalid <max computation (Mf)> argument\n");
+  xbt_assert(sscanf(argv[13], "%lf", &min_data_size) == 1, "Invalid <min data size (MB)> argument\n");
+  xbt_assert(sscanf(argv[14], "%lf", &max_data_size) == 1, "Invalid <max data size (MB)> argument\n");
+  xbt_assert(sscanf(argv[15], "%d", &seed) == 1, "Invalid <seed> argument\n");
 
 
   xbt_assert(route_length <= num_links, "The <route length> argument cannot be larger than the <#links> argument");
