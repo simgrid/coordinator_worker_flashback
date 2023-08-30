@@ -23,7 +23,6 @@ build: clean
 run: 
 	python3 ./run_experiments.py ${MIN_WORKERS} ${MAX_WORKERS} ${STEP_WORKERS} ${NUM_TRIALS}
 
-
 clean:
 	/bin/rm -rf build_*
 
