@@ -22,7 +22,7 @@ min_bandwidth = 100
 max_bandwidth = 200
 route_length = 10
 min_computation = 100
-max_computation = 200
+max_computation = 100
 min_data_size = 100
 max_data_size = 100
 
