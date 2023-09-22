@@ -26,8 +26,8 @@ max_computation = 100
 min_data_size = 100
 max_data_size = 100
 
-versions = ["v3_10", "v3_34"]
-energy_plugin = {"v3_10":"", "v3_34":"--cfg=plugin:host_energy"}
+versions = ["v3_10", "v3_12", "v3_34"]
+energy_plugin = {"v3_10":"", "v3_12":"", "v3_34":"--cfg=plugin:host_energy"}
 
 #stack_size_in_kb = 100
 #"--cfg=contexts/stack-size:{stack_size_in_kb}"
@@ -85,8 +85,10 @@ print(results)
 for version in versions:
     if version == "v3_10":
         line_style = ":"
-    else:
+    elif version == "v3_12":
         line_style = "-"
+    else:
+        line_style = "--"
 
     average_times = [sum(results[version][x][0]) / len(results[version][x][0]) for x in num_workers_values]
 
