@@ -15,19 +15,23 @@ RUN apt-get -y install cmake
 # experimental environment
 RUN apt-get install -y time
 
-# install boost
-#RUN apt-get -y install libboost-all-dev
-RUN wget --no-check-certificate https://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.gz && tar -xzf boost_1_55_0.tar.gz && cd boost_1_55_0 && ./bootstrap.sh && ./b2 &&  ./b2 install  && cd .. && /bin/rm -rf boost_1_55_0
-
 # install doxygen
 RUN apt-get -y install doxygen 
 
 # install editor
 RUN apt-get -y install vim
 
+# install boost
+#RUN apt-get -y install libboost-all-dev
+RUN apt-get -y install libbz2-dev
+RUN wget --no-check-certificate https://sourceforge.net/projects/boost/files/boost/1.54.0/boost_1_54_0.tar.gz && tar -xzf boost_1_54_0.tar.gz && cd boost_1_54_0 && ./bootstrap.sh && ./b2 ;  ./b2 install  ; cd .. && /bin/rm -rf boost_1_54_0
+
 
 
 # install SimGrid
+RUN apt-get -y install fig2dev
+RUN apt-get -y install perl-modules
+
 RUN wget --no-check-certificate https://framagit.org/simgrid/simgrid/-/archive/v3_12/simgrid-v3_12.tar.gz && tar -xf simgrid-v3_12.tar.gz && cd simgrid-v3_12 && head -200 ./src/simix/smx_private.h > /tmp/smx_private.h && echo "#undef SIGSTKSZ" >> /tmp/smx_private.h && echo "#define SIGSTKSZ 20480" >> /tmp/smx_private.h && tail -135 ./src/simix/smx_private.h >> /tmp/smx_private.h && /bin/mv /tmp/smx_private.h ./src/simix/smx_private.h && mkdir build && cd build && cmake .. && make -j12  && make install && cd ../.. && /bin/rm -rf simgrid-*
 
 

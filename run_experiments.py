@@ -117,7 +117,7 @@ ax1.tick_params(axis='x', labelsize=fontsize)
 ax1.tick_params(axis='y', labelsize=fontsize)
 ax2.tick_params(axis='y', labelsize=fontsize)
 
-lns = lns_handles[0] + lns_handles[1] + lns_handles[2] + lns_handles[3]
+lns = lns_handles[0] + lns_handles[1] + lns_handles[2] + lns_handles[3] + lns_handles[4] + lns_handles[5]
 labs = [l.get_label() for l in lns]
 ax1.legend(lns, labs, loc=0, fontsize=fontsize)
 
