@@ -1,12 +1,12 @@
 .NOTPARALLEL:
 
 MIN_WORKERS=1000
-MAX_WORKERS=10000
+MAX_WORKERS=7000
 STEP_WORKERS=1000
-NUM_TRIALS=5
+NUM_TRIALS=1
 
-#VERSIONS=v3_10 v3_12 v3_34
-VERSIONS=v3_24 v3_34
+#VERSIONS=v3_10 v3_12 v3_20 v3_24 v3_34
+VERSIONS=v3_20
 
 default:
 	@echo "make build  : will build the Docker containers and the simulators (do this first)"
@@ -23,7 +23,7 @@ build: clean
 	done	
 
 run: 
-	python3 ./run_experiments.py ${MIN_WORKERS} ${MAX_WORKERS} ${STEP_WORKERS} ${NUM_TRIALS}
+	python3 ./run_experiments.py ${MIN_WORKERS} ${MAX_WORKERS} ${STEP_WORKERS} ${NUM_TRIALS} ${VERSIONS}
 
 clean:
 	/bin/rm -rf build_*

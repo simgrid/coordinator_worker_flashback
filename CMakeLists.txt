@@ -7,15 +7,18 @@ find_library(SIMGRID_LIBRARY NAMES simgrid)
 
 add_executable(master_worker_v3_10 ./msg-app-masterworker-v3_10.c)
 add_executable(master_worker_v3_12 ./msg-app-masterworker-v3_10.c)
+add_executable(master_worker_v3_20 ./s4u-app-masterworkers-v3_24.cpp)
 add_executable(master_worker_v3_24 ./s4u-app-masterworkers-v3_24.cpp)
 add_executable(master_worker_v3_34 ./s4u-app-masterworkers-v3_34.cpp)
 
 target_link_libraries(master_worker_v3_10 ${SIMGRID_LIBRARY})
 target_link_libraries(master_worker_v3_12 ${SIMGRID_LIBRARY})
+target_link_libraries(master_worker_v3_20 ${SIMGRID_LIBRARY})
 target_link_libraries(master_worker_v3_24 ${SIMGRID_LIBRARY})
 target_link_libraries(master_worker_v3_34 ${SIMGRID_LIBRARY})
 
 install(TARGETS master_worker_v3_10 DESTINATION bin)
 install(TARGETS master_worker_v3_12 DESTINATION bin)
+install(TARGETS master_worker_v3_20 DESTINATION bin)
 install(TARGETS master_worker_v3_24 DESTINATION bin)
 install(TARGETS master_worker_v3_34 DESTINATION bin)
