@@ -43,18 +43,19 @@ static void master(std::vector<std::string> args) {
     xbt_assert(sscanf(args.at(5).c_str(),"%lf", &max_comm_size) == 1, "Invalid maximum communication size");    /* - Number of tasks      */
     xbt_assert(sscanf(args.at(6).c_str(),"%ld", &num_workers) == 1, "Invalid number of workers");    /* - Number of tasks      */
 
-    std::vector<sg4::Mailbox*> workers;
-    for (unsigned int i = 0; i < num_workers; i++) {
-        workers.push_back(sg4::Mailbox::by_name("WorkerHost-" + std::to_string(i)));
-    }
+    XBT_INFO("Got %ld workers and %ld tasks to process", num_workers, num_tasks);
 
-    XBT_INFO("Got %zu workers and %ld tasks to process", workers.size(), num_tasks);
+    sg4::Mailbox* master_mailbox    = sg4::Mailbox::by_name("master_mailbox");
 
     for (int i = 0; i < num_tasks; i++) { /* For each task to be executed: */
-        /* - Select a worker in a round-robin way */
-        auto mailbox = workers[i % workers.size()];
+        /* Wait for a worker request */
+        auto worker_id = master_mailbox->get_unique<long>();
 
         /* - Send the computation cost to that worker */
+        char mailbox_name[80];
+        snprintf(mailbox_name, 79, "worker-%ld", *worker_id);
+        sg4::Mailbox* mailbox = sg4::Mailbox::by_name(mailbox_name);
+
         XBT_INFO("Sending task %d of %ld to mailbox '%s'", i, num_tasks, mailbox->get_cname());
         double compute_cost = double_randfrom(min_comp_size, max_comp_size);
         double communication_cost = double_randfrom(min_comm_size, max_comm_size);
@@ -62,10 +63,14 @@ static void master(std::vector<std::string> args) {
     }
 
     XBT_INFO("All tasks have been dispatched. Request all workers to stop.");
-    for (unsigned int i = 0; i < workers.size(); i++) {
-        /* The workers stop when receiving a negative compute_cost */
-        sg4::Mailbox* mailbox = workers[i % workers.size()];
+    for (unsigned int i = 0; i < num_workers; i++) {
+        /* Wait for a worker request */
+        auto worker_id = master_mailbox->get_unique<long>();
 
+        /* - Send the computation cost to that worker */
+        char mailbox_name[80];
+        snprintf(mailbox_name,79, "worker-%ld", *worker_id);
+        sg4::Mailbox* mailbox = sg4::Mailbox::by_name(mailbox_name);
         mailbox->put(new double(-1.0), 0);
     }
 }
@@ -74,13 +79,20 @@ static void master(std::vector<std::string> args) {
 // worker-begin
 static void worker(std::vector<std::string> args)
 {
-    xbt_assert(args.size() == 1, "The worker expects no argument");
+    long id;
+    xbt_assert(args.size() == 2, "The worker expects exactly one argument");
+    xbt_assert(sscanf(args.at(1).c_str(),"%lu", &id) == 1, "Invalid id");
 
-    const sg4::Host* my_host = sg4::this_actor::get_host();
-    sg4::Mailbox* mailbox    = sg4::Mailbox::by_name(my_host->get_name());
+//    const sg4::Host* my_host = sg4::this_actor::get_host();
+    char mailbox_name[80];
+    snprintf(mailbox_name,79, "worker-%ld", id);
+    sg4::Mailbox* mailbox           = sg4::Mailbox::by_name(mailbox_name);
+    sg4::Mailbox* master_mailbox    = sg4::Mailbox::by_name("master_mailbox");
 
     double compute_cost;
     do {
+        master_mailbox->put(new long(id), 1024);
+
         auto msg     = mailbox->get_unique<double>();
         compute_cost = *msg;
 
@@ -194,7 +206,9 @@ void create_deployment_file(std::string filepath,
     // Create worker processes
     int current_worker_host_index = 0;
     for (int i=0; i < num_workers; i++) {
-        fprintf(df, "  <actor host=\"WorkerHost-%d\" function=\"worker\" />\n", current_worker_host_index);
+        fprintf(df, "  <actor host=\"WorkerHost-%d\" function=\"worker\">\n", current_worker_host_index);
+        fprintf(df, "     <argument value=\"%d\" />\n", i);
+        fprintf(df, "  </actor>\n");
         current_worker_host_index  = (current_worker_host_index + 1) % num_hosts;
     }
 
