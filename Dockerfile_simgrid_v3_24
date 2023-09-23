@@ -1,0 +1,35 @@
+#FROM ubuntu:jammy
+FROM debian:12
+
+MAINTAINER Henri Casanova <henric@hawaii.edu>
+
+RUN apt-get update
+
+# install languages
+RUN apt-get -y install g++ vim
+
+# build environment
+RUN apt-get -y install wget
+RUN apt-get -y install cmake
+RUN apt-get -y install sudo
+
+# experimental environment
+RUN apt-get install -y time
+
+# install boost
+RUN apt-get -y install libboost-all-dev
+
+# install doxygen
+RUN apt-get -y install doxygen 
+
+# install SimGrid
+RUN wget --no-check-certificate https://framagit.org/simgrid/simgrid/-/archive/v3.24/simgrid-v3.24.tar.gz && tar -xf simgrid-v3.24.tar.gz && cd simgrid-v3.24 && head -108 ./src/kernel/context/Context.hpp > /tmp/Context.hpp && echo "#undef SIGSTKSZ" >> /tmp/Context.hpp && echo "#define SIGSTKSZ 20480" >> /tmp/Context.hpp && tail -6 ./src/kernel/context/Context.hpp >> /tmp/Context.hpp && /bin/mv /tmp/Context.hpp ./src/kernel/context/Context.hpp && cmake -Denable_smpi=off . && make -j12 && sudo make install && cd .. && rm -rf simgrid-v3.24*
+
+# Add user
+RUN apt-get install -y sudo
+RUN useradd -ms /bin/bash simgrid
+RUN adduser simgrid sudo
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+USER simgrid
+WORKDIR /home/simgrid

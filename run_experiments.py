@@ -26,8 +26,9 @@ max_computation = 100
 min_data_size = 100
 max_data_size = 100
 
-versions = ["v3_10", "v3_12", "v3_34"]
-energy_plugin = {"v3_10":"", "v3_12":"", "v3_34":"--cfg=plugin:host_energy"}
+#versions = ["v3_10", "v3_12", "v3_24", "v3_34"]
+versions = ["v3_24"]
+energy_plugin = {"v3_10":"", "v3_12":"", "v3_24":"--cfg=plugin:host_energy", "v3_34":"--cfg=plugin:host_energy"}
 
 #stack_size_in_kb = 100
 #"--cfg=contexts/stack-size:{stack_size_in_kb}"
