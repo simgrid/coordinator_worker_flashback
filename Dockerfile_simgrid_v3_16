@@ -36,6 +36,12 @@ RUN cd simgrid-v3.16 && head -157 ./src/kernel/context/Context.hpp > /tmp/Contex
 
 RUN cd simgrid-v3.16 && mkdir build && cd build && cmake .. && make -j12  && make install 
 
+# install GooglePerf
+RUN apt-get install -y google-perftools
+# Create a convenient soft link to the profiler.so file
+RUN ln -s /usr/lib/aarch64-linux-gnu/libprofiler.so.0 /usr/local/lib/libprofiler.so
+
+
 # Add user
 RUN apt-get install -y sudo
 RUN useradd -ms /bin/bash simgrid

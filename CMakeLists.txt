@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(SimGridMasterWorker)
 
-set(CMAKE_C_FLAGS --std=c99)
+set(CMAKE_C_FLAGS "--std=c99")
+
+#set(CMAKE_C_FLAGS "--std=c99 -g")
+#set(CMAKE_EXE_LINKER_FLAGS "/usr/local/lib/libprofiler.so")
 
 find_library(SIMGRID_LIBRARY NAMES simgrid)
 

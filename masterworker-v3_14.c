@@ -3,8 +3,8 @@
 /* This program is free software; you can redistribute it and/or modify it
  * under the terms of the license (GNU LGPL) which comes with this package. */
 
-//#include "simgrid/msg.h"
-#include "msg/msg.h"
+#include "simgrid/msg.h"
+//#include "msg/msg.h"
 #include <stdlib.h>
 
 XBT_LOG_NEW_DEFAULT_CATEGORY(msg_app_masterworker, "Messages specific for this msg example");

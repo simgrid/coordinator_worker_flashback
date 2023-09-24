@@ -26,7 +26,13 @@ RUN apt-get -y install vim
 
 
 # install SimGrid
-RUN wget --no-check-certificate https://framagit.org/simgrid/simgrid/-/archive/v3_10/simgrid-v3_10.tar.gz && tar -xf simgrid-v3_10.tar.gz && cd simgrid-v3_10 && head -92 ./CMakeLists.txt > /tmp/CMakeLists.txt &&  tail -151 ./CMakeLists.txt >> /tmp/CMakeLists.txt && mv /tmp/CMakeLists.txt ./CMakeLists.txt && mkdir build && cd build && cmake .. && make -j12  && make install && cd ../.. && /bin/rm -rf simgrid-*
+RUN wget --no-check-certificate https://framagit.org/simgrid/simgrid/-/archive/v3_10/simgrid-v3_10.tar.gz && tar -xf simgrid-v3_10.tar.gz && cd simgrid-v3_10 && head -92 ./CMakeLists.txt > /tmp/CMakeLists.txt &&  tail -151 ./CMakeLists.txt >> /tmp/CMakeLists.txt && mv /tmp/CMakeLists.txt ./CMakeLists.txt && mkdir build && cd build && cmake .. && make -j12  && make install
+
+# install GooglePerf
+RUN apt-get install -y google-perftools
+# Create a convenient soft link to the profiler.so file
+RUN ln -s /usr/lib/aarch64-linux-gnu/libprofiler.so.0 /usr/local/lib/libprofiler.so
+
 
 # Add user
 RUN apt-get install -y sudo

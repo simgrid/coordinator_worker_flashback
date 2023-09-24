@@ -40,6 +40,12 @@ RUN cd simgrid-v3.20 && head -261 ./include/xbt/future.hpp > /tmp/future.hpp && 
 
 RUN cd simgrid-v3.20 && mkdir build && cd build && cmake -Denable_smpi=off .. && make -j12 && sudo make install 
 
+# install GooglePerf
+RUN apt-get install -y google-perftools
+# Create a convenient soft link to the profiler.so file
+RUN ln -s /usr/lib/aarch64-linux-gnu/libprofiler.so.0 /usr/local/lib/libprofiler.so
+
+
 # Add user
 RUN apt-get install -y sudo
 RUN useradd -ms /bin/bash simgrid
