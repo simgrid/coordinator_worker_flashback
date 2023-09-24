@@ -33,6 +33,7 @@ energy_plugins = {
         "v3_12":"", 
         "v3_14":"", 
         "v3_15":"", 
+        "v3_16":"", 
         "v3_20":"--cfg=plugin:host_energy", 
         "v3_24":"--cfg=plugin:host_energy", 
         "v3_34":"--cfg=plugin:host_energy"
@@ -43,6 +44,7 @@ line_styles = {
         "v3_12":"-", 
         "v3_14":":", 
         "v3_15":"-", 
+        "v3_16":"-", 
         "v3_20":".", 
         "v3_24":"-.", 
         "v3_34":"--"}
