@@ -16,14 +16,29 @@ RUN apt-get -y install sudo
 # experimental environment
 RUN apt-get install -y time
 
+#install python3
+RUN apt-get install -y python3
+
 # install boost
-RUN apt-get -y install libboost-all-dev
+RUN wget --no-check-certificate https://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.gz && tar -xzf boost_1_55_0.tar.gz && cd boost_1_55_0 && ./bootstrap.sh && ./b2 ;  ./b2 install  ; cd .. && /bin/rm -rf boost_1_55_0
+#RUN apt-get -y install libboost-all-dev
+
+RUN apt-get -y install perl-modules
+
 
 # install doxygen
 RUN apt-get -y install doxygen 
 
 # install SimGrid
-RUN wget --no-check-certificate https://framagit.org/simgrid/simgrid/-/archive/v3.20/simgrid-v3.20.tar.gz && tar -xf simgrid-v3.20.tar.gz && cd simgrid-v3.20 && head -116 ./src/kernel/context/Context.hpp > /tmp/Context.hpp && echo "#undef SIGSTKSZ" >> /tmp/Context.hpp && echo "#define SIGSTKSZ 20480" >> /tmp/Context.hpp && tail -30 ./src/kernel/context/Context.hpp >> /tmp/Context.hpp && /bin/mv /tmp/Context.hpp ./src/kernel/context/Context.hpp && echo "#include <stdexcept>" > /tmp/sd_daxloader.cpp && cat src/simdag/sd_daxloader.cpp >> /tmp/sd_daxloader.cpp && mv /tmp/sd_daxloader.cpp src/simdag/sd_daxloader.cpp &&  cmake -Denable_smpi=off . && make -j12 && sudo make install && cd .. && rm -rf simgrid-v3.20*
+RUN wget --no-check-certificate https://framagit.org/simgrid/simgrid/-/archive/v3.20/simgrid-v3.20.tar.gz && tar -xf simgrid-v3.20.tar.gz && cd simgrid-v3.20 
+RUN cd simgrid-v3.20 && head -116 ./src/kernel/context/Context.hpp > /tmp/Context.hpp && echo "#undef SIGSTKSZ" >> /tmp/Context.hpp && echo "#define SIGSTKSZ 20480" >> /tmp/Context.hpp && tail -30 ./src/kernel/context/Context.hpp >> /tmp/Context.hpp && /bin/mv /tmp/Context.hpp ./src/kernel/context/Context.hpp
+RUN cd simgrid-v3.20 && echo "#include <stdexcept>" > /tmp/sd_daxloader.cpp && cat src/simdag/sd_daxloader.cpp >> /tmp/sd_daxloader.cpp && mv /tmp/sd_daxloader.cpp src/simdag/sd_daxloader.cpp &&  echo "#include <string>" > /tmp/smpi_f2c.hpp && cat src/smpi/include/smpi_f2c.hpp >> /tmp/smpi_f2c.hpp && mv /tmp/smpi_f2c.hpp src/smpi/include/smpi_f2c.hpp
+RUN cd simgrid-v3.20 && echo "#define SIGSTKSZ 20480" > /tmp/ContextThread.cpp && echo "char sigsegv_stack2[SIGSTKSZ];" >> /tmp/ContextThread.cpp && cat src/kernel/context/ContextThread.cpp  | sed "s/sigsegv_stack/sigsegv_stack2/" >> /tmp/ContextThread.cpp && mv /tmp/ContextThread.cpp src/kernel/context/ContextThread.cpp
+RUN cd simgrid-v3.20 && head -54 ./include/xbt/functional.hpp > /tmp/functional.hpp && tail -258 ./include/xbt/functional.hpp >> /tmp/functional.hpp  && mv /tmp/functional.hpp ./include/xbt/functional.hpp 
+RUN cd simgrid-v3.20 && head -59 ./include/xbt/functional.hpp > /tmp/functional.hpp && tail -246 ./include/xbt/functional.hpp >> /tmp/functional.hpp  && mv /tmp/functional.hpp ./include/xbt/functional.hpp 
+RUN cd simgrid-v3.20 && head -261 ./include/xbt/future.hpp > /tmp/future.hpp && tail -4 ./include/xbt/future.hpp >> /tmp/future.hpp  && mv /tmp/future.hpp ./include/xbt/future.hpp 
+
+RUN cd simgrid-v3.20 && mkdir build && cd build && cmake -Denable_smpi=off .. && make -j12 && sudo make install 
 
 # Add user
 RUN apt-get install -y sudo

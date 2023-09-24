@@ -7,7 +7,7 @@ find_library(SIMGRID_LIBRARY NAMES simgrid)
 
 add_executable(master_worker_v3_10 ./msg-app-masterworker-v3_10.c)
 add_executable(master_worker_v3_12 ./msg-app-masterworker-v3_10.c)
-add_executable(master_worker_v3_20 ./s4u-app-masterworkers-v3_24.cpp)
+add_executable(master_worker_v3_20 ./s4u-app-masterworkers-v3_20.cpp)
 add_executable(master_worker_v3_24 ./s4u-app-masterworkers-v3_24.cpp)
 add_executable(master_worker_v3_34 ./s4u-app-masterworkers-v3_34.cpp)
 
