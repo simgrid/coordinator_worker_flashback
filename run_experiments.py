@@ -28,9 +28,8 @@ max_computation = 100
 min_data_size = 100
 max_data_size = 100
 
-#versions = ["v3_10", "v3_12", "v3_24", "v3_34"]
-energy_plugins = {"v3_10":"", "v3_12":"", "v3_24":"--cfg=plugin:host_energy", "v3_34":"--cfg=plugin:host_energy"}
-line_styles = {"v3_10":":", "v3_12":"-", "v3_24":"-.", "v3_34":"--"}
+energy_plugins = {"v3_10":"", "v3_12":"", "v3_20":"--cfg=plugin:host_energy", "v3_24":"--cfg=plugin:host_energy", "v3_34":"--cfg=plugin:host_energy"}
+line_styles = {"v3_10":":", "v3_12":"-", "v_20":".", "v3_24":"-.", "v3_34":"--"}
 
 #stack_size_in_kb = 100
 #"--cfg=contexts/stack-size:{stack_size_in_kb}"
@@ -54,7 +53,7 @@ for num_workers in num_workers_values:
         for seed in range(0, num_trials):
 
             command = f"docker run -it --rm -w /home/simgrid/build_simgrid_{version}/ -v `pwd`:/home/simgrid simgrid_{version} /usr/bin/time -v ./master_worker_{version} {num_hosts} {num_cores_per_host} {min_core_speed} {max_core_speed} {num_links} {min_bandwidth} {max_bandwidth} {route_length} {num_workers} {num_tasks} {min_computation} {max_computation} {min_data_size} {max_data_size} {seed} --log=root.thresh:critical {energy_plugins[version]}"
-            #print(command)
+            print(command)
 
             try:
                 output = subprocess.check_output(command, shell=True).decode('utf-8').splitlines()
