@@ -28,8 +28,24 @@ max_computation = 100
 min_data_size = 100
 max_data_size = 100
 
-energy_plugins = {"v3_10":"", "v3_12":"", "v3_20":"--cfg=plugin:host_energy", "v3_24":"--cfg=plugin:host_energy", "v3_34":"--cfg=plugin:host_energy"}
-line_styles = {"v3_10":":", "v3_12":"-", "v_20":".", "v3_24":"-.", "v3_34":"--"}
+energy_plugins = {
+        "v3_10":"", 
+        "v3_12":"", 
+        "v3_14":"", 
+        "v3_15":"", 
+        "v3_20":"--cfg=plugin:host_energy", 
+        "v3_24":"--cfg=plugin:host_energy", 
+        "v3_34":"--cfg=plugin:host_energy"
+        }
+
+line_styles = {
+        "v3_10":":", 
+        "v3_12":"-", 
+        "v3_14":":", 
+        "v3_15":"-", 
+        "v3_20":".", 
+        "v3_24":"-.", 
+        "v3_34":"--"}
 
 #stack_size_in_kb = 100
 #"--cfg=contexts/stack-size:{stack_size_in_kb}"

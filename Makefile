@@ -1,12 +1,12 @@
 .NOTPARALLEL:
 
-MIN_WORKERS=1000
+MIN_WORKERS=5000
 MAX_WORKERS=7000
 STEP_WORKERS=1000
 NUM_TRIALS=1
 
-VERSIONS=v3_10 v3_12 v3_14 v3_15 v3_20 v3_24 v3_34
-#VERSIONS=v3_14
+#VERSIONS=v3_10 v3_12 v3_14 v3_15 v3_20 v3_24 v3_34
+VERSIONS=v3_16
 
 default:
 	@echo "make build  : will build the Docker containers and the simulators (do this first)"
