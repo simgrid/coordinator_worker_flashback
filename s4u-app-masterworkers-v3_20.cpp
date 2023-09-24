@@ -74,7 +74,9 @@ static int master(int argc, char **argv) {
         auto mailbox = sg4::Mailbox::by_name(mailbox_name);
         mailbox->put(new double(-1.0), 0);
     }
+    XBT_INFO("ALL DONE");
     return 0;
+
 }
 // master-end
 

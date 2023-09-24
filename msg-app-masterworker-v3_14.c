@@ -152,20 +152,20 @@ void create_platform_file(char *filepath,
 
     // XML Header
     fprintf(pf, "<?xml version='1.0'?>\n");
-    fprintf(pf, "<!DOCTYPE platform SYSTEM \"http://simgrid.gforge.inria.fr/simgrid.dtd\">\n");
-    fprintf(pf, "<platform version=\"3\">\n");
+    fprintf(pf, "<!DOCTYPE platform SYSTEM \"http://simgrid.gforge.inria.fr/simgrid/simgrid.dtd\">\n");
+    fprintf(pf, "<platform version=\"4\">\n");
     fprintf(pf, "<AS id=\"AS0\" routing=\"Full\">\n\n");
 
     // Create master hosts
-    fprintf(pf, "  <host id=\"MasterHost\" power=\"1Mf,0.5Mf,0.2Mf\" core=\"1\">\n");
-    fprintf(pf, "    <prop id=\"power_per_state\" value=\"95.0:200.0, 93.0:170.0, 90.0:150.0\" />\n");
+    fprintf(pf, "  <host id=\"MasterHost\" speed=\"1Mf,0.5Mf,0.2Mf\" core=\"1\">\n");
+    fprintf(pf, "    <prop id=\"watt_per_state\" value=\"95.0:200.0:300.0, 93.0:170.0:240.0, 90.0:150.0:200.0\" />\n");
     fprintf(pf, "  </host>\n");
 
     // Create worker hosts
     for (int i=0; i < num_hosts; i++) {
         double core_speed = double_randfrom(min_core_speed, max_core_speed);
-        fprintf(pf, "  <host id=\"WorkerHost-%d\" power=\"%.2lfMf,%.2lfMf,%.2lfMf\" core=\"%d\">\n", i, core_speed, core_speed * 0.5, core_speed * 0.2, num_cores_per_host);
-        fprintf(pf, "    <prop id=\"power_per_state\" value=\"95.0:200.0, 93.0:170.0, 90.0:150.0\" />\n");
+        fprintf(pf, "  <host id=\"WorkerHost-%d\" speed=\"%.2lfMf,%.2lfMf,%.2lfMf\" core=\"%d\">\n", i, core_speed, core_speed * 0.5, core_speed * 0.2, num_cores_per_host);
+        fprintf(pf, "    <prop id=\"watt_per_state\" value=\"95.0:200.0:300.0, 93.0:170.0:210.0, 90.0:150.0:190.0\" />\n");
         fprintf(pf, "  </host>\n");
     }
 
@@ -221,8 +221,8 @@ void create_deployment_file(char *filepath,
     FILE *df = fopen(filepath, "w");
     // XML Header
     fprintf(df, "<?xml version='1.0'?>\n");
-    fprintf(df, "<!DOCTYPE platform SYSTEM \"http://simgrid.gforge.inria.fr/simgrid.dtd\">\n");
-    fprintf(df, "<platform version=\"3\">\n");
+    fprintf(df, "<!DOCTYPE platform SYSTEM \"http://simgrid.gforge.inria.fr/simgrid/simgrid.dtd\">\n");
+    fprintf(df, "<platform version=\"4\">\n");
 
     // Create master process
     fprintf(df, "  <process host=\"MasterHost\" function=\"master\">\n");

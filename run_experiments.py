@@ -58,7 +58,7 @@ for num_workers in num_workers_values:
             try:
                 output = subprocess.check_output(command, shell=True).decode('utf-8').splitlines()
             except Exception:
-                sys.stderr.write("Out of memory... aborting this experiment")
+                sys.stderr.write(version + ": Execution failed\n")
                 continue
             for line in output:
                 if "Elapsed (wall clock)" in line:

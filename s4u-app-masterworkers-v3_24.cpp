@@ -73,6 +73,7 @@ static void master(std::vector<std::string> args) {
         sg4::Mailbox* mailbox = sg4::Mailbox::by_name(mailbox_name);
         mailbox->put(new double(-1.0), 0);
     }
+    XBT_INFO("ALL DONE");
 }
 // master-end
 
