@@ -9,7 +9,7 @@ add_executable(master_worker_v3_10 ./masterworker-v3_10.c)
 add_executable(master_worker_v3_12 ./masterworker-v3_10.c)
 add_executable(master_worker_v3_14 ./masterworker-v3_14.c)
 add_executable(master_worker_v3_15 ./masterworker-v3_14.c)
-add_executable(master_worker_v3_16 ./masterworker-v3_20.cpp
+add_executable(master_worker_v3_16 ./masterworker-v3_20.cpp)
 add_executable(master_worker_v3_20 ./masterworker-v3_20.cpp)
 add_executable(master_worker_v3_24 ./masterworker-v3_24.cpp)
 add_executable(master_worker_v3_34 ./masterworker-v3_34.cpp)
