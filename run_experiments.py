@@ -36,7 +36,8 @@ energy_plugins = {
         "v3_16":"", 
         "v3_20":"--cfg=plugin:host_energy", 
         "v3_24":"--cfg=plugin:host_energy", 
-        "v3_34":"--cfg=plugin:host_energy"
+        "v3_34":"--cfg=plugin:host_energy",
+        "v3_35":"--cfg=plugin:host_energy"
         }
 
 line_styles = {
@@ -47,7 +48,9 @@ line_styles = {
         "v3_16":"-", 
         "v3_20":".", 
         "v3_24":"-.", 
-        "v3_34":"--"}
+        "v3_34":"--",
+        "v3_35":"--"
+        }
 
 #stack_size_in_kb = 100
 #"--cfg=contexts/stack-size:{stack_size_in_kb}"
@@ -71,21 +74,25 @@ for num_workers in num_workers_values:
         for seed in range(0, num_trials):
 
             command = f"docker run -it --rm -w /home/simgrid/build_simgrid_{version}/ -v `pwd`:/home/simgrid simgrid_{version} /usr/bin/time -v ./master_worker_{version} {num_hosts} {num_cores_per_host} {min_core_speed} {max_core_speed} {num_links} {min_bandwidth} {max_bandwidth} {route_length} {num_workers} {num_tasks} {min_computation} {max_computation} {min_data_size} {max_data_size} {seed} --log=root.thresh:critical {energy_plugins[version]}"
-            #print(command)
+            print(command)
 
             try:
                 output = subprocess.check_output(command, shell=True).decode('utf-8').splitlines()
             except Exception:
                 sys.stderr.write(version + ": Execution failed\n")
                 continue
+            elapsed_time = 0
+            rss_size = 0
             for line in output:
                 if "Elapsed (wall clock)" in line:
                     tokens = line.split(":")
-                    sys.stderr.write(f"Version: {version}  Time: " + str(float(60.0 * float(tokens[-2]) + float(tokens[-1]))) + "\n")
-                    times.append(float(60.0 * float(tokens[-2]) + float(tokens[-1])))
+                    elapsed_time = float(60.0 * float(tokens[-2]) + float(tokens[-1]))
                 elif "Maximum resident set size" in line:
                     tokens = line.split(":")
-                    mems.append(float(tokens[-1]) / 1024.0)
+                    rss_size = float(tokens[-1]) / 1024.0
+            times.append(elapsed_time)
+            mems.append(rss_size)
+            sys.stderr.write(f"Version: {version}  Time: {elapsed_time}   RSS: {rss_size}\n")
 
         if len(times) == 0 or len(mems) == 0:
             results[version][num_workers] = [0, 0]

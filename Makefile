@@ -1,16 +1,15 @@
 .NOTPARALLEL:
 
 MIN_WORKERS=5000
-MAX_WORKERS=6000
+MAX_WORKERS=5000
 STEP_WORKERS=1000
 NUM_TRIALS=1
 
-VERSIONS=v3_10 v3_12 v3_14 v3_15 v3_16 v3_20 v3_24 v3_34
-#VERSIONS=v3_16
+VERSIONS=v3_10 v3_34 v3_35
 
 default:
 	@echo "make build  : will build the Docker containers and the simulators (do this first)"
-	@echo "make check  : will run one experiment with all containers to check that makespans are the same
+	@echo "make check  : will run one experiment with all containers to check that makespans are the same"
 	@echo "make run    : will run the experiment with whatever has been built last"
 
 build: clean
