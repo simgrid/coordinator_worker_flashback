@@ -29,10 +29,8 @@ RUN apt-get -y install vim
 RUN apt-get -y install git
 
 # install SimGrid
-#RUN git clone https://framagit.org/simgrid/simgrid.git && cd simgrid && git checkout 718bee0ecd82d03ef877e66f9ecb77c9e69a599b
-RUN wget --no-check-certificate https://framagit.org/simgrid/simgrid/-/archive/v3.34/simgrid-v3.34.tar.gz && tar -xf simgrid-v3.34.tar.gz && cd simgrid-v3.34
-RUN cd simgrid-v3.34 && head -28 src/kernel/activity/MailboxImpl.hpp | sed "s/.*circular.*//" > /tmp/MailboxImpl.hpp && echo "std::list<CommImplPtr> comm_queue_;" >> /tmp/MailboxImpl.hpp && echo "std::list<CommImplPtr> done_comm_queue_;" >> /tmp/MailboxImpl.hpp && tail -40 src/kernel/activity/MailboxImpl.hpp >> /tmp/MailboxImpl.hpp && mv /tmp/MailboxImpl.hpp src/kernel/activity/MailboxImpl.hpp
-RUN cd simgrid-v3.34 && mkdir build && cd build && cmake .. && make -j8 && sudo make install
+RUN git clone https://framagit.org/simgrid/simgrid.git && cd simgrid && git checkout 718bee0ecd82d03ef877e66f9ecb77c9e69a599b
+RUN cd simgrid && mkdir build && cd build && cmake -Denable_SMPI=off .. && make -j8 && sudo make install
 
 # install GooglePerf
 #RUN apt-get install -y google-perftools
