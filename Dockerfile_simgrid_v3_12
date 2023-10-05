@@ -32,12 +32,8 @@ RUN wget --no-check-certificate https://sourceforge.net/projects/boost/files/boo
 RUN apt-get -y install fig2dev
 RUN apt-get -y install perl-modules
 
-RUN wget --no-check-certificate https://framagit.org/simgrid/simgrid/-/archive/v3_12/simgrid-v3_12.tar.gz && tar -xf simgrid-v3_12.tar.gz && cd simgrid-v3_12 && head -200 ./src/simix/smx_private.h > /tmp/smx_private.h && echo "#undef SIGSTKSZ" >> /tmp/smx_private.h && echo "#define SIGSTKSZ 20480" >> /tmp/smx_private.h && tail -135 ./src/simix/smx_private.h >> /tmp/smx_private.h && /bin/mv /tmp/smx_private.h ./src/simix/smx_private.h && mkdir build && cd build && cmake .. && make -j12  && make install
+RUN wget --no-check-certificate https://framagit.org/simgrid/simgrid/-/archive/v3_12/simgrid-v3_12.tar.gz && tar -xf simgrid-v3_12.tar.gz && cd simgrid-v3_12 && head -200 ./src/simix/smx_private.h > /tmp/smx_private.h && echo "#undef SIGSTKSZ" >> /tmp/smx_private.h && echo "#define SIGSTKSZ 20480" >> /tmp/smx_private.h && tail -135 ./src/simix/smx_private.h >> /tmp/smx_private.h && /bin/mv /tmp/smx_private.h ./src/simix/smx_private.h && mkdir build && cd build && cmake -Denable_SMPI=off .. && make -j12  && make install
 
-# install GooglePerf
-RUN apt-get install -y google-perftools
-# Create a convenient soft link to the profiler.so file
-RUN ln -s /usr/lib/aarch64-linux-gnu/libprofiler.so.0 /usr/local/lib/libprofiler.so
 
 
 # Add user

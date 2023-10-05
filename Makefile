@@ -5,7 +5,7 @@ MAX_WORKERS=5000
 STEP_WORKERS=1000
 NUM_TRIALS=1
 
-VERSIONS=v3_10 v3_34 v3_34_patched v3_35 v3_35_patched
+VERSIONS=v3_10 v3_35
 
 default:
 	@echo "make build  : will build the Docker containers and the simulators (do this first)"
