@@ -31,7 +31,7 @@ RUN apt-get -y install git
 # install SimGrid
 RUN git clone https://framagit.org/simgrid/simgrid.git
 RUN cd simgrid && git checkout 9db79d70d969bdb58f26c689ad4f965b3d9e80cf 
-RUN cat simgrid/src/kernel/activity/MailboxImpl.hpp | sed "s/list/deque" > /tmp/MailboxImpl.hpp && mv /tmp/MailboxImpl.hpp simgrid/src/kernel/activity/MailboxImpl.hpp
+RUN cat simgrid/src/kernel/activity/MailboxImpl.hpp | sed "s/list<CommImplPtr>/deque<CommImplPtr>/" > /tmp/MailboxImpl.hpp && mv /tmp/MailboxImpl.hpp simgrid/src/kernel/activity/MailboxImpl.hpp
 RUN cd simgrid &&  mkdir build && cd build && cmake -Denable_SMPI=off .. && make -j8 && sudo make install
 
 
