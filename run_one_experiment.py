@@ -35,6 +35,7 @@ energy_plugins = {
         "v3_20":"--cfg=plugin:host_energy", 
         "v3_24":"--cfg=plugin:host_energy", 
         "v3_34":"--cfg=plugin:host_energy",
+        "v3_36":"--cfg=plugin:host_energy",
         "v3_35":"--cfg=plugin:host_energy"
         }
 
@@ -47,7 +48,8 @@ line_styles = {
         "v3_20":".", 
         "v3_24":"-.", 
         "v3_34":"--",
-        "v3_35":"--"
+        "v3_35":"--",
+        "v3_36":"--"
         }
 
 #stack_size_in_kb = 100
