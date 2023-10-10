@@ -30,7 +30,7 @@ RUN apt-get -y install git
 
 # install SimGrid
 RUN git clone https://framagit.org/simgrid/simgrid.git
-RUN cd simgrid && git checkout 9db79d70d969bdb58f26c689ad4f965b3d9e80cf && mkdir build && cd build && cmake -Denable_SMPI=off .. && make -j8 && sudo make install
+RUN cd simgrid && git checkout 9db79d70d969bdb58f26c689ad4f965b3d9e80cf && mkdir build && cd build && cmake -Denable_smpi=off .. && make -j8 && sudo make install
 
 
 # Add user
