@@ -76,7 +76,7 @@ for version in versions:
     for num_tasks in num_tasks_values:
         results[version][num_tasks] = {}
         for num_workers in num_workers_values:
-            sys.stderr.write(f"Running {num_tasks} with {num_workers} workers...\n")
+            sys.stderr.write(f"Running {num_tasks} tasks with {num_workers} workers...\n")
 
             # RUN EXPERIMENT
             # num_tasks = num_workers * 200
