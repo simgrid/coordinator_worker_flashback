@@ -8,13 +8,18 @@ try:
     min_num_workers = int(sys.argv[1])
     max_num_workers = int(sys.argv[2])
     step_num_workers = int(sys.argv[3])
-    num_trials = int(sys.argv[4])
+    min_num_tasks = int(sys.argv[4])
+    max_num_tasks = int(sys.argv[5])
+    step_num_tasks = int(sys.argv[6])
+    num_trials = int(sys.argv[7])
 except Exception:
     sys.stderr.write(
-        f"Usage: {sys.argv[0]} <min num workers (int)> <max num workers (int)> <step num workers (int)> <num trials (int)> <version> ... <version>\n")
+        f"Usage: {sys.argv[0]} <min num workers (int)> <max num workers (int)> <step num workers (int)> "
+        f"<min num tasks (int)> <max num tasks (int) <step num tasks (int)> "
+        f"<num trials (int)> <version> ... <version>\n")
     sys.exit(1)
 
-versions = sys.argv[5:len(sys.argv)]
+versions = sys.argv[8:len(sys.argv)]
 
 num_cores_per_host = 8
 min_core_speed = 100
@@ -62,44 +67,50 @@ for version in versions:
     results[version] = {}
 
 num_workers_values = range(min_num_workers, max_num_workers + 1, step_num_workers)
+num_tasks_values = range(min_num_tasks, max_num_tasks + 1, step_num_tasks)
 
-for num_workers in num_workers_values:
-    sys.stderr.write(f"Running with {num_workers} workers...\n")
-    for version in versions:
+if len(num_workers_values) > 1 and len(num_tasks_values) > 1:
+    raise "You can either have multiple worker values or multiple task values, but not both"
 
-        # RUN EXPERIMENT
-        num_tasks = num_workers * 200
-        num_hosts = int(1 + num_workers / num_cores_per_host)
+for version in versions:
+    for num_tasks in num_tasks_values:
+        results[version][num_tasks] = {}
+        for num_workers in num_workers_values:
+            sys.stderr.write(f"Running {num_tasks} with {num_workers} workers...\n")
 
-        times = []
-        mems = []
-        for seed in range(0, num_trials):
+            # RUN EXPERIMENT
+            # num_tasks = num_workers * 200
+            num_hosts = int(1 + num_workers / num_cores_per_host)
 
-            command = f"docker run -it --rm -w /home/simgrid/build_simgrid_{version}/ -v `pwd`:/home/simgrid simgrid_{version} /usr/bin/time -v ./master_worker_{version} {num_hosts} {num_cores_per_host} {min_core_speed} {max_core_speed} {num_links} {min_bandwidth} {max_bandwidth} {route_length} {num_workers} {num_tasks} {min_computation} {max_computation} {min_data_size} {max_data_size} {seed} --log=root.thresh:critical {energy_plugins[version]}"
-            print(command)
+            times = []
+            mems = []
+            for seed in range(0, num_trials):
 
-            try:
-                output = subprocess.check_output(command, shell=True).decode('utf-8').splitlines()
-            except Exception:
-                sys.stderr.write(version + ": Execution failed\n")
-                continue
-            elapsed_time = 0
-            rss_size = 0
-            for line in output:
-                if "Elapsed (wall clock)" in line:
-                    tokens = line.split(":")
-                    elapsed_time = float(60.0 * float(tokens[-2]) + float(tokens[-1]))
-                elif "Maximum resident set size" in line:
-                    tokens = line.split(":")
-                    rss_size = float(tokens[-1]) / 1024.0
-            times.append(elapsed_time)
-            mems.append(rss_size)
-            sys.stderr.write(f"Version: {version}  Time: {elapsed_time}   RSS: {rss_size}\n")
+                command = f"docker run -it --rm -w /home/simgrid/build_simgrid_{version}/ -v `pwd`:/home/simgrid simgrid_{version} /usr/bin/time -v ./master_worker_{version} {num_hosts} {num_cores_per_host} {min_core_speed} {max_core_speed} {num_links} {min_bandwidth} {max_bandwidth} {route_length} {num_workers} {num_tasks} {min_computation} {max_computation} {min_data_size} {max_data_size} {seed} --log=root.thresh:critical {energy_plugins[version]}"
+                print(command)
 
-        if len(times) == 0 or len(mems) == 0:
-            results[version][num_workers] = [0, 0]
-        else:
-            results[version][num_workers] = [times, mems]
+                try:
+                    output = subprocess.check_output(command, shell=True).decode('utf-8').splitlines()
+                except Exception:
+                    sys.stderr.write(version + ": Execution failed\n")
+                    continue
+                elapsed_time = 0
+                rss_size = 0
+                for line in output:
+                    if "Elapsed (wall clock)" in line:
+                        tokens = line.split(":")
+                        elapsed_time = float(60.0 * float(tokens[-2]) + float(tokens[-1]))
+                    elif "Maximum resident set size" in line:
+                        tokens = line.split(":")
+                        rss_size = float(tokens[-1]) / 1024.0
+                times.append(elapsed_time)
+                mems.append(rss_size)
+                sys.stderr.write(f"Version: {version}  Time: {elapsed_time}   RSS: {rss_size}\n")
+
+            if len(times) == 0 or len(mems) == 0:
+                results[version][num_tasks][num_workers] = [0, 0]
+            else:
+                results[version][num_tasks][num_workers] = [times, mems]
 
 
 # PLOT RESULTS
@@ -110,47 +121,92 @@ plt.grid(axis='y')
 
 lns_handles = []
 
-print(results)
 
-for version in versions:
-    line_style = line_styles[version]
+# HORRIBLE code duplication, but too lazy
+if len(num_tasks_values) == 1:
+    num_tasks = num_tasks_values[0]
+    for version in versions:
+        line_style = line_styles[version]
 
-    average_times = [sum(results[version][x][0]) / len(results[version][x][0]) for x in num_workers_values]
+        average_times = [sum(results[version][num_tasks][x][0]) / len(results[version][num_tasks][x][0]) for x in num_workers_values]
 
-    lns1 = ax1.plot(num_workers_values, average_times, 'r' + line_style, linewidth=2,
-                    label="Simulation Time " + version)
-    for num_workers in num_workers_values:
-        for time in results[version][num_workers][0]:
-            ax1.plot([num_workers], [time], 'xr', linewidth=2)
+        lns1 = ax1.plot(num_workers_values, average_times, 'r' + line_style, linewidth=2,
+                        label="Simulation Time " + version)
+        for num_workers in num_workers_values:
+            for time in results[version][num_tasks][num_workers][0]:
+                ax1.plot([num_workers], [time], 'xr', linewidth=2)
 
-    average_footprints = [sum(results[version][x][1]) / len(results[version][x][1]) for x in num_workers_values]
+        average_footprints = [sum(results[version][num_tasks][x][1]) / len(results[version][num_tasks][x][1]) for x in num_workers_values]
 
-    lns2 = ax2.plot(num_workers_values, average_footprints, 'b' + line_style, linewidth=2,
-                    label="Maximum RSS " + version)
-    for num_workers in num_workers_values:
-        for footprint in results[version][num_workers][1]:
-            ax2.plot([num_workers], [footprint], 'xb', linewidth=2)
+        lns2 = ax2.plot(num_workers_values, average_footprints, 'b' + line_style, linewidth=2,
+                        label="Maximum RSS " + version)
+        for num_workers in num_workers_values:
+            for footprint in results[version][num_tasks][num_workers][1]:
+                ax2.plot([num_workers], [footprint], 'xb', linewidth=2)
 
-    lns_handles.append(lns1)
-    lns_handles.append(lns2)
+        lns_handles.append(lns1)
+        lns_handles.append(lns2)
 
-ax1.set_xlabel("Number of workers", fontsize=fontsize + 1)
-ax1.set_ylabel("Time (sec)", fontsize=fontsize + 1)
-ax2.set_ylabel("Memory Footprint (MB)", fontsize=fontsize + 1)
+    ax1.set_xlabel("Number of workers", fontsize=fontsize + 1)
+    ax1.set_ylabel("Time (sec)", fontsize=fontsize + 1)
+    ax2.set_ylabel("Memory Footprint (MB)", fontsize=fontsize + 1)
 
-ax1.tick_params(axis='x', labelsize=fontsize)
-ax1.tick_params(axis='y', labelsize=fontsize)
-ax2.tick_params(axis='y', labelsize=fontsize)
+    ax1.tick_params(axis='x', labelsize=fontsize)
+    ax1.tick_params(axis='y', labelsize=fontsize)
+    ax2.tick_params(axis='y', labelsize=fontsize)
 
-#lns = lns_handles[0] + lns_handles[1] + lns_handles[2] + lns_handles[3] + lns_handles[4] + lns_handles[5]
-lns = lns_handles[0] + lns_handles[1]
-for i in range(1, len(versions)):
-    lns += lns_handles[i*2] + lns_handles[i*2+1]
+    #lns = lns_handles[0] + lns_handles[1] + lns_handles[2] + lns_handles[3] + lns_handles[4] + lns_handles[5]
+    lns = lns_handles[0] + lns_handles[1]
+    for i in range(1, len(versions)):
+        lns += lns_handles[i*2] + lns_handles[i*2+1]
 
 
-labs = [l.get_label() for l in lns]
-ax1.legend(lns, labs, loc=0, fontsize=fontsize)
+    labs = [l.get_label() for l in lns]
+    ax1.legend(lns, labs, loc=0, fontsize=fontsize)
 
-figname = f"simgrid_master_worker_{num_workers_values[0]}_{num_workers_values[-1]}.pdf"
-plt.savefig(figname)
-print("Figure saved to: " + figname)
+    figname = f"simgrid_master_worker_tasks_{num_tasks}_workers_{num_workers_values[0]}_{num_workers_values[-1]}.pdf"
+    plt.savefig(figname)
+    print("Figure saved to: " + figname)
+else:
+    num_workers = num_workers_values[0]
+    for version in versions:
+        line_style = line_styles[version]
+
+        average_times = [sum(results[version][x][num_workers][0]) / len(results[version][x][num_workers][0]) for x in num_tasks_values]
+
+        lns1 = ax1.plot(num_tasks_values, average_times, 'r' + line_style, linewidth=2,
+                        label="Simulation Time " + version)
+        for num_tasks in num_tasks_values:
+            for time in results[version][num_tasks][num_workers][0]:
+                ax1.plot([num_tasks], [time], 'xr', linewidth=2)
+
+        average_footprints = [sum(results[version][x][num_workers][1]) / len(results[version][x][num_workers][1]) for x in num_tasks_values]
+
+        lns2 = ax2.plot(num_tasks_values, average_footprints, 'b' + line_style, linewidth=2,
+                        label="Maximum RSS " + version)
+        for num_tasks in num_tasks_values:
+            for footprint in results[version][num_tasks][num_workers][1]:
+                ax2.plot([num_tasks], [footprint], 'xb', linewidth=2)
+
+        lns_handles.append(lns1)
+        lns_handles.append(lns2)
+
+    ax1.set_xlabel("Number of tasks", fontsize=fontsize + 1)
+    ax1.set_ylabel("Time (sec)", fontsize=fontsize + 1)
+    ax2.set_ylabel("Memory Footprint (MB)", fontsize=fontsize + 1)
+
+    ax1.tick_params(axis='x', labelsize=fontsize)
+    ax1.tick_params(axis='y', labelsize=fontsize)
+    ax2.tick_params(axis='y', labelsize=fontsize)
+
+    # lns = lns_handles[0] + lns_handles[1] + lns_handles[2] + lns_handles[3] + lns_handles[4] + lns_handles[5]
+    lns = lns_handles[0] + lns_handles[1]
+    for i in range(1, len(versions)):
+        lns += lns_handles[i * 2] + lns_handles[i * 2 + 1]
+
+    labs = [l.get_label() for l in lns]
+    ax1.legend(lns, labs, loc=0, fontsize=fontsize)
+
+    figname = f"simgrid_master_worker_{num_workers}_tasks_{num_tasks_values[0]}_{num_tasks_values[-1]}_{num_workers}.pdf"
+    plt.savefig(figname)
+    print("Figure saved to: " + figname)

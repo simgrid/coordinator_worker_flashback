@@ -1,11 +1,16 @@
 .NOTPARALLEL:
 
 MIN_WORKERS=1000
-MAX_WORKERS=5000
+MAX_WORKERS=30000
 STEP_WORKERS=1000
-NUM_TRIALS=5
+FIXED_TASKS=30000
+MIN_TASKS=1000
+MAX_TASKS=30000
+STEP_TASKS=1000
+FIXED_WORKERS=1000
+NUM_TRIALS=1
 
-VERSIONS=v3_10 v3_34 v3_35 v3_36
+VERSIONS=v3_10 v3_36
 
 default:
 	@echo "make build  : will build the Docker containers and the simulators (do this first)"
@@ -26,8 +31,11 @@ check:
 	python3 ./check_makespans.py ${VERSIONS}
 
 run: 
-	python3 ./run_experiments.py ${MIN_WORKERS} ${MAX_WORKERS} ${STEP_WORKERS} ${NUM_TRIALS} ${VERSIONS}
+	@echo "Running experiments for different numbers of workers"
+	python3 ./run_experiments.py ${MIN_WORKERS} ${MAX_WORKERS} ${STEP_WORKERS} ${FIXED_TASKS} ${FIXED_TASKS} 1 ${NUM_TRIALS} ${VERSIONS}
+	@echo "Running experiments for different numbers of tasks"
+	python3 ./run_experiments.py ${FIXED_WORKERS} ${FIXED_WORKERS} 1 ${MIN_TASKS} ${MAX_TASKS} ${STEP_TASKS} ${NUM_TRIALS} ${VERSIONS}
 
 clean:
-	/bin/rm -rf build_*
+	/bin/rm -rf build_* *.pdf
 
