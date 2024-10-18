@@ -34,7 +34,7 @@ will:
 These experiments are for some default sets of numbers of workers and numbers of trials (as encoded in the Makefile). These can be changed by typing, for instance:
 
 ```
-make MIN_WORKERS=1000 MAX_WORKERS=50000 STEP_WORKERS=1000 NUM_TRIALS=10 run
+make MIN_WORKERS=1000 MAX_WORKERS=50000 STEP_WORKERS=1000 MIN_TASKS=1000 MAX_TASKS=50000 STEP_TASKS=250 NUM_TRIALS=5 run
 ```
 
 
