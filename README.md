@@ -1,8 +1,8 @@
-## Master Worker Flashback
+## Coordinator-Worker Flashback
 
 ### Objective
 
-Compare the simulation time and memory footprint of the classical master-worker example provided in SimGrid distribution between different versions (currently 3.10 and 3.34)
+Compare the simulation time and memory footprint of the classical coordinator-worker example provided in the [SimGrid](https://simgrid.org) distribution between different versions (currently 3.10 and 3.34)
 
 ### Requirements
 
