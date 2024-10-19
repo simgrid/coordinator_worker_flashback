@@ -4,6 +4,9 @@ import sys
 import subprocess
 import matplotlib.pyplot as plt
 
+def average(l):
+    return sum(l) / len(l)
+
 try:
     min_num_workers = int(sys.argv[1])
     max_num_workers = int(sys.argv[2])
@@ -76,7 +79,7 @@ for version in versions:
     for num_tasks in num_tasks_values:
         results[version][num_tasks] = {}
         for num_workers in num_workers_values:
-            sys.stderr.write(f"Running {num_tasks} tasks with {num_workers} workers...\n")
+            sys.stderr.write(f"Running {num_tasks} tasks with {num_workers} workers...")
 
             # RUN EXPERIMENT
             # num_tasks = num_workers * 200
@@ -87,7 +90,7 @@ for version in versions:
             for seed in range(0, num_trials):
 
                 command = f"docker run -it --rm -w /home/simgrid/build_simgrid_{version}/ -v `pwd`:/home/simgrid simgrid_{version} /usr/bin/time -v ./master_worker_{version} {num_hosts} {num_cores_per_host} {min_core_speed} {max_core_speed} {num_links} {min_bandwidth} {max_bandwidth} {route_length} {num_workers} {num_tasks} {min_computation} {max_computation} {min_data_size} {max_data_size} {seed} --log=root.thresh:critical {energy_plugins[version]}"
-                print(command)
+                # print(command)
 
                 try:
                     output = subprocess.check_output(command, shell=True).decode('utf-8').splitlines()
@@ -130,7 +133,7 @@ if len(num_tasks_values) == 1:
     for version in versions:
         line_style = line_styles[version]
 
-        average_times = [sum(results[version][num_tasks][x][0]) / len(results[version][num_tasks][x][0]) for x in num_workers_values]
+        average_times = [average(results[version][num_tasks][x][0]) for x in num_workers_values]
 
         lns1 = ax1.plot(num_workers_values, average_times, 'r' + line_style, linewidth=2,
                         label="Simulation Time " + version)
@@ -142,7 +145,7 @@ if len(num_tasks_values) == 1:
 
         error_bar_offset += error_bar_offset_increment
 
-        average_footprints = [sum(results[version][num_tasks][x][1]) / len(results[version][num_tasks][x][1]) for x in num_workers_values]
+        average_footprints = [average(results[version][num_tasks][x][1]) for x in num_workers_values]
 
         lns2 = ax2.plot(num_workers_values, average_footprints, 'b' + line_style, linewidth=2,
                         label="Maximum RSS " + version)
@@ -158,6 +161,7 @@ if len(num_tasks_values) == 1:
         lns_handles.append(lns1)
         lns_handles.append(lns2)
 
+    ax1.set_xlim([num_workers_values[0], num_workers_values[-1]])
     ax1.set_xlabel("Number of workers", fontsize=fontsize + 3)
     ax1.set_ylabel("Time (sec)", fontsize=fontsize + 3)
     ax2.set_ylabel("Memory Footprint (MB)", fontsize=fontsize + 3)
@@ -171,13 +175,27 @@ if len(num_tasks_values) == 1:
     for i in range(1, len(versions)):
         lns += lns_handles[i*2] + lns_handles[i*2+1]
 
-
     labs = [l.get_label() for l in lns]
     ax1.legend(lns, labs, loc=0, fontsize=fontsize+3)
 
     figname = f"simgrid_master_worker_tasks_{num_tasks}_workers_{num_workers_values[0]}_{num_workers_values[-1]}.pdf"
     plt.savefig(figname)
     print("Figure saved to: " + figname)
+
+    print("Statistics:")
+    version1 = versions[0]
+    version2 = versions[1]
+
+    time_ratios = []
+    rss_ratios = []
+    for num_workers in num_workers_values:
+        time_ratio = average(results[version2][num_tasks][num_workers][0]) / average(results[version1][num_tasks][num_workers][0])
+        rss_ratio = average(results[version2][num_tasks][num_workers][1]) / average(results[version1][num_tasks][num_workers][1])
+        time_ratios.append(time_ratio)
+        rss_ratios.append(rss_ratio)
+    print(f"Time ratios: min={min(time_ratios)}  max={max(time_ratios)}  ave={average(time_ratios)}")
+    print(f"RSS ratios: min={min(rss_ratios)}  max={max(rss_ratios)}  ave={average(rss_ratios)}")
+
 else:
     num_workers = num_workers_values[0]
     for version in versions:
@@ -186,7 +204,7 @@ else:
         error_bar_offset_increment = (num_tasks_values[1] - num_tasks_values[0]) * 0.01
         error_bar_offset = 0
 
-        average_times = [sum(results[version][x][num_workers][0]) / len(results[version][x][num_workers][0]) for x in num_tasks_values]
+        average_times = [average(results[version][x][num_workers][0]) for x in num_tasks_values]
 
         lns1 = ax1.plot(num_tasks_values, average_times, 'r' + line_style, linewidth=2,
                         label="Simulation Time " + version)
@@ -199,7 +217,7 @@ else:
 
         error_bar_offset += error_bar_offset_increment
 
-        average_footprints = [sum(results[version][x][num_workers][1]) / len(results[version][x][num_workers][1]) for x in num_tasks_values]
+        average_footprints = [average(results[version][x][num_workers][1]) for x in num_tasks_values]
 
         lns2 = ax2.plot(num_tasks_values, average_footprints, 'b' + line_style, linewidth=2,
                         label="Maximum RSS " + version)
@@ -218,6 +236,7 @@ else:
     ax1.set_xlabel("Number of tasks", fontsize=fontsize + 3)
     ax1.set_ylabel("Time (sec)", fontsize=fontsize + 3)
     ax2.set_ylabel("Memory Footprint (MB)", fontsize=fontsize + 3)
+    ax1.set_xlim([num_tasks_values[0], num_tasks_values[-1]])
 
     ax1.tick_params(axis='x', labelsize=fontsize + 3)
     ax1.tick_params(axis='y', labelsize=fontsize + 3)
@@ -234,3 +253,17 @@ else:
     figname = f"simgrid_master_worker_workers_{num_workers}_tasks_{num_tasks_values[0]}_{num_tasks_values[-1]}.pdf"
     plt.savefig(figname)
     print("Figure saved to: " + figname)
+
+    print("Statistics:")
+    version1 = versions[0]
+    version2 = versions[1]
+
+    time_ratios = []
+    rss_ratios = []
+    for num_tasks in num_tasks_values:
+        time_ratio = average(results[version2][num_tasks][num_workers][0]) / average(results[version1][num_tasks][num_workers][0])
+        rss_ratio = average(results[version2][num_tasks][num_workers][1]) / average(results[version1][num_tasks][num_workers][1])
+        time_ratios.append(time_ratio)
+        rss_ratios.append(rss_ratio)
+    print(f"Time ratios: min={min(time_ratios)}  max={max(time_ratios)}  ave={average(time_ratios)}")
+    print(f"RSS ratios: min={min(rss_ratios)}  max={max(rss_ratios)}  ave={average(rss_ratios)}")
