@@ -233,7 +233,7 @@ else:
         lns_handles.append(lns1)
         lns_handles.append(lns2)
 
-    ax1.set_xlabel("Number of tasks", fontsize=fontsize + 3)
+    ax1.set_xlabel("Number of workunits", fontsize=fontsize + 3)
     ax1.set_ylabel("Time (sec)", fontsize=fontsize + 3)
     ax2.set_ylabel("Memory Footprint (MB)", fontsize=fontsize + 3)
     ax1.set_xlim([num_tasks_values[0], num_tasks_values[-1]])
