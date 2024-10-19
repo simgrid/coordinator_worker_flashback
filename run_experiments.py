@@ -125,6 +125,8 @@ lns_handles = []
 # HORRIBLE code duplication, but too lazy
 if len(num_tasks_values) == 1:
     num_tasks = num_tasks_values[0]
+    error_bar_offset_increment = (num_workers_values[1] - num_workers_values[0]) * 0.01
+    error_bar_offset = 0
     for version in versions:
         line_style = line_styles[version]
 
@@ -133,16 +135,25 @@ if len(num_tasks_values) == 1:
         lns1 = ax1.plot(num_workers_values, average_times, 'r' + line_style, linewidth=2,
                         label="Simulation Time " + version)
         for num_workers in num_workers_values:
-            for time in results[version][num_tasks][num_workers][0]:
-                ax1.plot([num_workers], [time], 'xr', linewidth=2)
+            to_plot = [min(results[version][num_tasks][num_workers][0]), max(results[version][num_tasks][num_workers][0])]
+            for time in to_plot:
+                ax1.plot([num_workers + error_bar_offset], [time], 'r_', linewidth=2)
+            ax1.plot([num_workers + error_bar_offset, num_workers + error_bar_offset], [to_plot[0], to_plot[1]], 'r' + line_style)
+
+        error_bar_offset += error_bar_offset_increment
 
         average_footprints = [sum(results[version][num_tasks][x][1]) / len(results[version][num_tasks][x][1]) for x in num_workers_values]
 
         lns2 = ax2.plot(num_workers_values, average_footprints, 'b' + line_style, linewidth=2,
                         label="Maximum RSS " + version)
         for num_workers in num_workers_values:
-            for footprint in results[version][num_tasks][num_workers][1]:
-                ax2.plot([num_workers], [footprint], 'xb', linewidth=2)
+            to_plot = [min(results[version][num_tasks][num_workers][1]),
+                       max(results[version][num_tasks][num_workers][1])]
+            for footprint in to_plot:
+                ax2.plot([num_workers + error_bar_offset], [footprint], 'b_', linewidth=2)
+            ax2.plot([num_workers + error_bar_offset, num_workers + error_bar_offset], [to_plot[0], to_plot[1]], 'b' + line_style)
+
+        error_bar_offset += error_bar_offset_increment
 
         lns_handles.append(lns1)
         lns_handles.append(lns2)
@@ -172,21 +183,34 @@ else:
     for version in versions:
         line_style = line_styles[version]
 
+        error_bar_offset_increment = (num_tasks_values[1] - num_tasks_values[0]) * 0.01
+        error_bar_offset = 0
+
         average_times = [sum(results[version][x][num_workers][0]) / len(results[version][x][num_workers][0]) for x in num_tasks_values]
 
         lns1 = ax1.plot(num_tasks_values, average_times, 'r' + line_style, linewidth=2,
                         label="Simulation Time " + version)
         for num_tasks in num_tasks_values:
-            for time in results[version][num_tasks][num_workers][0]:
-                ax1.plot([num_tasks], [time], 'xr', linewidth=2)
+            to_plot = [min(results[version][num_tasks][num_workers][0]),
+                       max(results[version][num_tasks][num_workers][0])]
+            for time in to_plot:
+                ax1.plot([num_tasks + error_bar_offset], [time], 'r_', linewidth=2)
+            ax1.plot([num_tasks + error_bar_offset, num_tasks + error_bar_offset], [to_plot[0], to_plot[1]], 'r' + line_style)
+
+        error_bar_offset += error_bar_offset_increment
 
         average_footprints = [sum(results[version][x][num_workers][1]) / len(results[version][x][num_workers][1]) for x in num_tasks_values]
 
         lns2 = ax2.plot(num_tasks_values, average_footprints, 'b' + line_style, linewidth=2,
                         label="Maximum RSS " + version)
         for num_tasks in num_tasks_values:
-            for footprint in results[version][num_tasks][num_workers][1]:
-                ax2.plot([num_tasks], [footprint], 'xb', linewidth=2)
+            to_plot = [min(results[version][num_tasks][num_workers][1]),
+                       max(results[version][num_tasks][num_workers][1])]
+            for footprint in to_plot:
+                ax2.plot([num_tasks + error_bar_offset], [footprint], 'b_', linewidth=2)
+            ax2.plot([num_tasks + error_bar_offset, num_tasks + error_bar_offset], [to_plot[0], to_plot[1]], 'b' + line_style)
+
+        error_bar_offset += error_bar_offset_increment
 
         lns_handles.append(lns1)
         lns_handles.append(lns2)
