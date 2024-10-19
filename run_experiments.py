@@ -116,6 +116,8 @@ for version in versions:
                 results[version][num_tasks][num_workers] = [times, mems]
 
 
+print(results)
+
 # PLOT RESULTS
 fontsize = 12
 f, ax1 = plt.subplots(1, 1, sharey=True, figsize=(14, 7))
