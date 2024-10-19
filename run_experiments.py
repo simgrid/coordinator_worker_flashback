@@ -231,6 +231,6 @@ else:
     labs = [l.get_label() for l in lns]
     ax1.legend(lns, labs, loc=0, fontsize=fontsize)
 
-    figname = f"simgrid_master_workers_{num_workers}_tasks_{num_tasks_values[0]}_{num_tasks_values[-1]}.pdf"
+    figname = f"simgrid_master_worker_workers_{num_workers}_tasks_{num_tasks_values[0]}_{num_tasks_values[-1]}.pdf"
     plt.savefig(figname)
     print("Figure saved to: " + figname)
