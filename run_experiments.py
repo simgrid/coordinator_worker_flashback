@@ -119,7 +119,7 @@ for version in versions:
 print(results)
 
 # PLOT RESULTS
-fontsize = 15
+fontsize = 20
 f, ax1 = plt.subplots(1, 1, sharey=True, figsize=(14, 7))
 ax2 = ax1.twinx()
 plt.grid(axis='y')
@@ -137,26 +137,26 @@ if len(num_tasks_values) == 1:
 
         average_times = [average(results[version][num_tasks][x][0]) for x in num_workers_values]
 
-        lns1 = ax1.plot(num_workers_values, average_times, 'r' + line_style, linewidth=3,
+        lns1 = ax1.plot(num_workers_values, average_times, 'r' + line_style, linewidth=4,
                         label="Simulation Time " + version)
         for num_workers in num_workers_values:
             to_plot = [min(results[version][num_tasks][num_workers][0]), max(results[version][num_tasks][num_workers][0])]
             for time in to_plot:
-                ax1.plot([num_workers + error_bar_offset], [time], 'r', linewidth=2)
-            ax1.plot([num_workers + error_bar_offset, num_workers + error_bar_offset], [to_plot[0], to_plot[1]], 'r', linewidth=2)
+                ax1.plot([num_workers + error_bar_offset], [time], 'r', linewidth=3)
+            ax1.plot([num_workers + error_bar_offset, num_workers + error_bar_offset], [to_plot[0], to_plot[1]], 'r', linewidth=3)
 
         error_bar_offset += error_bar_offset_increment
 
         average_footprints = [average(results[version][num_tasks][x][1]) for x in num_workers_values]
 
-        lns2 = ax2.plot(num_workers_values, average_footprints, 'b' + line_style, linewidth=3,
+        lns2 = ax2.plot(num_workers_values, average_footprints, 'b' + line_style, linewidth=4,
                         label="Maximum RSS " + version)
         for num_workers in num_workers_values:
             to_plot = [min(results[version][num_tasks][num_workers][1]),
                        max(results[version][num_tasks][num_workers][1])]
             for footprint in to_plot:
-                ax2.plot([num_workers + error_bar_offset], [footprint], 'b', linewidth=2)
-            ax2.plot([num_workers + error_bar_offset, num_workers + error_bar_offset], [to_plot[0], to_plot[1]], 'b', linewidth=2)
+                ax2.plot([num_workers + error_bar_offset], [footprint], 'b', linewidth=3)
+            ax2.plot([num_workers + error_bar_offset, num_workers + error_bar_offset], [to_plot[0], to_plot[1]], 'b', linewidth=3)
 
         error_bar_offset += error_bar_offset_increment
 
@@ -209,27 +209,27 @@ else:
 
         average_times = [average(results[version][x][num_workers][0]) for x in num_tasks_values]
 
-        lns1 = ax1.plot(num_tasks_values, average_times, 'r' + line_style, linewidth=3,
+        lns1 = ax1.plot(num_tasks_values, average_times, 'r' + line_style, linewidth=4,
                         label="Simulation Time " + version)
         for num_tasks in num_tasks_values:
             to_plot = [min(results[version][num_tasks][num_workers][0]),
                        max(results[version][num_tasks][num_workers][0])]
             for time in to_plot:
-                ax1.plot([num_tasks + error_bar_offset], [time], 'r', linewidth=2)
-            ax1.plot([num_tasks + error_bar_offset, num_tasks + error_bar_offset], [to_plot[0], to_plot[1]], 'r', linewidth=2)
+                ax1.plot([num_tasks + error_bar_offset], [time], 'r', linewidth=3)
+            ax1.plot([num_tasks + error_bar_offset, num_tasks + error_bar_offset], [to_plot[0], to_plot[1]], 'r', linewidth=3)
 
         error_bar_offset += error_bar_offset_increment
 
         average_footprints = [average(results[version][x][num_workers][1]) for x in num_tasks_values]
 
-        lns2 = ax2.plot(num_tasks_values, average_footprints, 'b' + line_style, linewidth=3,
+        lns2 = ax2.plot(num_tasks_values, average_footprints, 'b' + line_style, linewidth=4,
                         label="Maximum RSS " + version)
         for num_tasks in num_tasks_values:
             to_plot = [min(results[version][num_tasks][num_workers][1]),
                        max(results[version][num_tasks][num_workers][1])]
             for footprint in to_plot:
-                ax2.plot([num_tasks + error_bar_offset], [footprint], 'b', linewidth=2)
-            ax2.plot([num_tasks + error_bar_offset, num_tasks + error_bar_offset], [to_plot[0], to_plot[1]], 'b', linewidth=2)
+                ax2.plot([num_tasks + error_bar_offset], [footprint], 'b', linewidth=3)
+            ax2.plot([num_tasks + error_bar_offset, num_tasks + error_bar_offset], [to_plot[0], to_plot[1]], 'b', linewidth=3)
 
         error_bar_offset += error_bar_offset_increment
 
