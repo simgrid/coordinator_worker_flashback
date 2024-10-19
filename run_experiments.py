@@ -158,13 +158,13 @@ if len(num_tasks_values) == 1:
         lns_handles.append(lns1)
         lns_handles.append(lns2)
 
-    ax1.set_xlabel("Number of workers", fontsize=fontsize + 1)
-    ax1.set_ylabel("Time (sec)", fontsize=fontsize + 1)
-    ax2.set_ylabel("Memory Footprint (MB)", fontsize=fontsize + 1)
+    ax1.set_xlabel("Number of workers", fontsize=fontsize + 3)
+    ax1.set_ylabel("Time (sec)", fontsize=fontsize + 3)
+    ax2.set_ylabel("Memory Footprint (MB)", fontsize=fontsize + 3)
 
-    ax1.tick_params(axis='x', labelsize=fontsize)
-    ax1.tick_params(axis='y', labelsize=fontsize)
-    ax2.tick_params(axis='y', labelsize=fontsize)
+    ax1.tick_params(axis='x', labelsize=fontsize + 3)
+    ax1.tick_params(axis='y', labelsize=fontsize + 3)
+    ax2.tick_params(axis='y', labelsize=fontsize + 3)
 
     #lns = lns_handles[0] + lns_handles[1] + lns_handles[2] + lns_handles[3] + lns_handles[4] + lns_handles[5]
     lns = lns_handles[0] + lns_handles[1]
@@ -173,7 +173,7 @@ if len(num_tasks_values) == 1:
 
 
     labs = [l.get_label() for l in lns]
-    ax1.legend(lns, labs, loc=0, fontsize=fontsize)
+    ax1.legend(lns, labs, loc=0, fontsize=fontsize+3)
 
     figname = f"simgrid_master_worker_tasks_{num_tasks}_workers_{num_workers_values[0]}_{num_workers_values[-1]}.pdf"
     plt.savefig(figname)
@@ -215,13 +215,13 @@ else:
         lns_handles.append(lns1)
         lns_handles.append(lns2)
 
-    ax1.set_xlabel("Number of tasks", fontsize=fontsize + 1)
-    ax1.set_ylabel("Time (sec)", fontsize=fontsize + 1)
-    ax2.set_ylabel("Memory Footprint (MB)", fontsize=fontsize + 1)
+    ax1.set_xlabel("Number of tasks", fontsize=fontsize + 3)
+    ax1.set_ylabel("Time (sec)", fontsize=fontsize + 3)
+    ax2.set_ylabel("Memory Footprint (MB)", fontsize=fontsize + 3)
 
-    ax1.tick_params(axis='x', labelsize=fontsize)
-    ax1.tick_params(axis='y', labelsize=fontsize)
-    ax2.tick_params(axis='y', labelsize=fontsize)
+    ax1.tick_params(axis='x', labelsize=fontsize + 3)
+    ax1.tick_params(axis='y', labelsize=fontsize + 3)
+    ax2.tick_params(axis='y', labelsize=fontsize + 3)
 
     # lns = lns_handles[0] + lns_handles[1] + lns_handles[2] + lns_handles[3] + lns_handles[4] + lns_handles[5]
     lns = lns_handles[0] + lns_handles[1]
@@ -229,7 +229,7 @@ else:
         lns += lns_handles[i * 2] + lns_handles[i * 2 + 1]
 
     labs = [l.get_label() for l in lns]
-    ax1.legend(lns, labs, loc=0, fontsize=fontsize)
+    ax1.legend(lns, labs, loc=0, fontsize=fontsize+3)
 
     figname = f"simgrid_master_worker_workers_{num_workers}_tasks_{num_tasks_values[0]}_{num_tasks_values[-1]}.pdf"
     plt.savefig(figname)
