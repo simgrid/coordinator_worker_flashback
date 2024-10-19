@@ -119,7 +119,7 @@ for version in versions:
 print(results)
 
 # PLOT RESULTS
-fontsize = 12
+fontsize = 15
 f, ax1 = plt.subplots(1, 1, sharey=True, figsize=(14, 7))
 ax2 = ax1.twinx()
 plt.grid(axis='y')
@@ -137,26 +137,26 @@ if len(num_tasks_values) == 1:
 
         average_times = [average(results[version][num_tasks][x][0]) for x in num_workers_values]
 
-        lns1 = ax1.plot(num_workers_values, average_times, 'r' + line_style, linewidth=2,
+        lns1 = ax1.plot(num_workers_values, average_times, 'r' + line_style, linewidth=3,
                         label="Simulation Time " + version)
         for num_workers in num_workers_values:
             to_plot = [min(results[version][num_tasks][num_workers][0]), max(results[version][num_tasks][num_workers][0])]
             for time in to_plot:
-                ax1.plot([num_workers + error_bar_offset], [time], 'r_', linewidth=2)
-            ax1.plot([num_workers + error_bar_offset, num_workers + error_bar_offset], [to_plot[0], to_plot[1]], 'r' + line_style)
+                ax1.plot([num_workers + error_bar_offset], [time], 'r', linewidth=2)
+            ax1.plot([num_workers + error_bar_offset, num_workers + error_bar_offset], [to_plot[0], to_plot[1]], 'r', linewidth=2)
 
         error_bar_offset += error_bar_offset_increment
 
         average_footprints = [average(results[version][num_tasks][x][1]) for x in num_workers_values]
 
-        lns2 = ax2.plot(num_workers_values, average_footprints, 'b' + line_style, linewidth=2,
+        lns2 = ax2.plot(num_workers_values, average_footprints, 'b' + line_style, linewidth=3,
                         label="Maximum RSS " + version)
         for num_workers in num_workers_values:
             to_plot = [min(results[version][num_tasks][num_workers][1]),
                        max(results[version][num_tasks][num_workers][1])]
             for footprint in to_plot:
-                ax2.plot([num_workers + error_bar_offset], [footprint], 'b_', linewidth=2)
-            ax2.plot([num_workers + error_bar_offset, num_workers + error_bar_offset], [to_plot[0], to_plot[1]], 'b' + line_style)
+                ax2.plot([num_workers + error_bar_offset], [footprint], 'b', linewidth=2)
+            ax2.plot([num_workers + error_bar_offset, num_workers + error_bar_offset], [to_plot[0], to_plot[1]], 'b', linewidth=2)
 
         error_bar_offset += error_bar_offset_increment
 
@@ -178,7 +178,8 @@ if len(num_tasks_values) == 1:
         lns += lns_handles[i*2] + lns_handles[i*2+1]
 
     labs = [l.get_label() for l in lns]
-    ax1.legend(lns, labs, loc=0, fontsize=fontsize+3)
+    ax2.legend(lns, labs, loc=6, fontsize=fontsize+3)
+    f.tight_layout()
 
     figname = f"simgrid_master_worker_tasks_{num_tasks}_workers_{num_workers_values[0]}_{num_workers_values[-1]}.pdf"
     plt.savefig(figname)
@@ -208,27 +209,27 @@ else:
 
         average_times = [average(results[version][x][num_workers][0]) for x in num_tasks_values]
 
-        lns1 = ax1.plot(num_tasks_values, average_times, 'r' + line_style, linewidth=2,
+        lns1 = ax1.plot(num_tasks_values, average_times, 'r' + line_style, linewidth=3,
                         label="Simulation Time " + version)
         for num_tasks in num_tasks_values:
             to_plot = [min(results[version][num_tasks][num_workers][0]),
                        max(results[version][num_tasks][num_workers][0])]
             for time in to_plot:
-                ax1.plot([num_tasks + error_bar_offset], [time], 'r_', linewidth=2)
-            ax1.plot([num_tasks + error_bar_offset, num_tasks + error_bar_offset], [to_plot[0], to_plot[1]], 'r' + line_style)
+                ax1.plot([num_tasks + error_bar_offset], [time], 'r', linewidth=2)
+            ax1.plot([num_tasks + error_bar_offset, num_tasks + error_bar_offset], [to_plot[0], to_plot[1]], 'r', linewidth=2)
 
         error_bar_offset += error_bar_offset_increment
 
         average_footprints = [average(results[version][x][num_workers][1]) for x in num_tasks_values]
 
-        lns2 = ax2.plot(num_tasks_values, average_footprints, 'b' + line_style, linewidth=2,
+        lns2 = ax2.plot(num_tasks_values, average_footprints, 'b' + line_style, linewidth=3,
                         label="Maximum RSS " + version)
         for num_tasks in num_tasks_values:
             to_plot = [min(results[version][num_tasks][num_workers][1]),
                        max(results[version][num_tasks][num_workers][1])]
             for footprint in to_plot:
-                ax2.plot([num_tasks + error_bar_offset], [footprint], 'b_', linewidth=2)
-            ax2.plot([num_tasks + error_bar_offset, num_tasks + error_bar_offset], [to_plot[0], to_plot[1]], 'b' + line_style)
+                ax2.plot([num_tasks + error_bar_offset], [footprint], 'b', linewidth=2)
+            ax2.plot([num_tasks + error_bar_offset, num_tasks + error_bar_offset], [to_plot[0], to_plot[1]], 'b', linewidth=2)
 
         error_bar_offset += error_bar_offset_increment
 
@@ -250,7 +251,8 @@ else:
         lns += lns_handles[i * 2] + lns_handles[i * 2 + 1]
 
     labs = [l.get_label() for l in lns]
-    ax1.legend(lns, labs, loc=0, fontsize=fontsize+3)
+    ax2.legend(lns, labs, loc=6, fontsize=fontsize+3)
+    f.tight_layout()
 
     figname = f"simgrid_master_worker_workers_{num_workers}_tasks_{num_tasks_values[0]}_{num_tasks_values[-1]}.pdf"
     plt.savefig(figname)
