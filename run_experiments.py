@@ -251,7 +251,7 @@ else:
         lns += lns_handles[i * 2] + lns_handles[i * 2 + 1]
 
     labs = [l.get_label() for l in lns]
-    ax2.legend(lns, labs, loc=6, fontsize=fontsize+3)
+    ax2.legend(lns, labs, loc=(0.01,0.5), fontsize=fontsize+3)
     f.tight_layout()
 
     figname = f"simgrid_master_worker_workers_{num_workers}_tasks_{num_tasks_values[0]}_{num_tasks_values[-1]}.pdf"
