@@ -14,15 +14,15 @@ if __name__ == "__main__":
         min_num_workers = int(sys.argv[5])
         max_num_workers = int(sys.argv[6])
         step_num_workers = int(sys.argv[7])
-        min_num_tasks = int(sys.argv[8])
-        max_num_tasks = int(sys.argv[9])
-        step_num_tasks = int(sys.argv[10])
+        min_num_workunits = int(sys.argv[8])
+        max_num_workunits = int(sys.argv[9])
+        step_num_workunits = int(sys.argv[10])
         num_trials = int(sys.argv[11])
     except Exception:
         sys.stderr.write(
             f"Usage: {sys.argv[0]} <pickle file name for results> <min num cores per host> <max num cores per host> "
             f"<stp num cores per host> <min num workers (int)> <max num workers (int)> <step num workers (int)> "
-            f"<min num tasks (int)> <max num tasks (int) <step num tasks (int)> "
+            f"<min num workunits (int)> <max num workunits (int) <step num workunits (int)> "
             f"<num trials (int)> <version> ... <version>\n")
         sys.exit(1)
 
@@ -74,26 +74,26 @@ if __name__ == "__main__":
 
     max_num_cores_per_host_values = range(min_num_cores_per_host, max_num_cores_per_host+1, step_num_cores_per_host)
     num_workers_values = range(min_num_workers, max_num_workers + 1, step_num_workers)
-    num_tasks_values = range(min_num_tasks, max_num_tasks + 1, step_num_tasks)
+    num_workunits_values = range(min_num_workunits, max_num_workunits + 1, step_num_workunits)
 
-    if len(num_workers_values) > 1 and len(num_tasks_values) > 1:
-        raise "You can either have multiple worker values or multiple task values, but not both"
+    if len(num_workers_values) > 1 and len(num_workunits_values) > 1:
+        raise "You can either have multiple worker values or multiple workunit values, but not both"
 
     for version in versions:
-        for num_tasks in num_tasks_values:
-            results[version][num_tasks] = {}
+        for num_workunits in num_workunits_values:
+            results[version][num_workunits] = {}
             for num_workers in num_workers_values:
-                results[version][num_tasks][num_workers] = {}
+                results[version][num_workunits][num_workers] = {}
                 for num_cores_per_host in max_num_cores_per_host_values:
 
-                    sys.stderr.write(f"Running {num_tasks} tasks with {num_workers} workers and {num_cores_per_host} cores per host...")
+                    sys.stderr.write(f"Running {num_workunits} workunits with {num_workers} workers and {num_cores_per_host} cores per host...")
                     num_hosts = int(1 + num_workers)
 
                     times = []
                     mems = []
                     for seed in range(0, num_trials):
 
-                        command = f"docker run -it --rm -w /home/simgrid/build_simgrid_{version}/ -v `pwd`:/home/simgrid simgrid_{version} /usr/bin/time -v ./master_worker_{version} {num_hosts} {num_cores_per_host} {min_core_speed} {max_core_speed} {num_links} {min_bandwidth} {max_bandwidth} {route_length} {num_workers} {num_tasks} {min_computation} {max_computation} {min_data_size} {max_data_size} {seed} --log=root.thresh:critical {energy_plugins[version]}"
+                        command = f"docker run -it --rm -w /home/simgrid/build_simgrid_{version}/ -v `pwd`:/home/simgrid simgrid_{version} /usr/bin/time -v ./master_worker_{version} {num_hosts} {num_cores_per_host} {min_core_speed} {max_core_speed} {num_links} {min_bandwidth} {max_bandwidth} {route_length} {num_workers} {num_workunits} {min_computation} {max_computation} {min_data_size} {max_data_size} {seed} --log=root.thresh:critical {energy_plugins[version]}"
                         # print(command)
 
                         try:
@@ -115,9 +115,9 @@ if __name__ == "__main__":
                         sys.stderr.write(f"Version: {version}  Time: {elapsed_time}   RSS: {rss_size}\n")
 
                     if len(times) == 0 or len(mems) == 0:
-                        results[version][num_tasks][num_workers][num_cores_per_host] = [0, 0]
+                        results[version][num_workunits][num_workers][num_cores_per_host] = [0, 0]
                     else:
-                        results[version][num_tasks][num_workers][num_cores_per_host] = [times, mems]
+                        results[version][num_workunits][num_workers][num_cores_per_host] = [times, mems]
 
     print(results)
     with open(pickle_file_name, 'wb') as f:

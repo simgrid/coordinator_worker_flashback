@@ -116,7 +116,6 @@ if __name__ == "__main__":
     if len(num_workunits_values) != 1:
         data = {}
         for version in versions:
-            # results[version][num_tasks][num_workers] = [0, 0]
             data[version] = {}
             for x in results[version]:
                 data[version][x] = results[version][x][num_workers_values[0]][num_num_cores_per_host_values[0]]
@@ -125,7 +124,6 @@ if __name__ == "__main__":
     elif len(num_workers_values) != 1:
         data = {}
         for version in versions:
-            # results[version][num_tasks][num_workers] = [0, 0]
             data[version] = {}
             for x in results[version][num_workunits_values[0]]:
                 data[version][x] = results[version][num_workunits_values[0]][x][num_num_cores_per_host_values[0]]
@@ -133,7 +131,6 @@ if __name__ == "__main__":
     elif len(num_num_cores_per_host_values) != 1:
         data = {}
         for version in versions:
-            # results[version][num_tasks][num_workers] = [0, 0]
             data[version] = {}
             for x in results[version][num_workunits_values[0]][num_workers_values[0]]:
                 data[version][x] = results[version][num_workunits_values[0]][num_workers_values[0]][x]
