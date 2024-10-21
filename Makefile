@@ -37,11 +37,11 @@ check:
 
 run: 
 	@echo "Running experiments for different numbers of workers"
-	python3 ./run_experiments.py /tmp/results.pickled ${NUM_CORES_PER_HOST} ${MIN_WORKERS} ${MAX_WORKERS} ${STEP_WORKERS} ${FIXED_TASKS} ${FIXED_TASKS} 1 ${NUM_TRIALS} ${VERSIONS}
+	python3 ./run_experiments.py /tmp/results.pickled ${NUM_CORES_PER_HOST} ${MIN_WORKERS} ${MAX_WORKERS} ${STEP_WORKERS} ${FIXED_TASKS} ${FIXED_TASKS} 1 ${NUM_TRIALS} ${VERSIONS} 1> ./results_master_worker_workunits_${FIXED_TASKS}_workers_${MIN_WORKERS}_${MAX_WORKERS}_${NUM_CORES_PER_HOST}.txt
 	cp /tmp/results.pickled ./results_master_worker_workunits_${FIXED_TASKS}_workers_${MIN_WORKERS}_${MAX_WORKERS}_${NUM_CORES_PER_HOST}.pickled
 	python3 ./plot_results.py  ./results_master_worker_workunits_${FIXED_TASKS}_workers_${MIN_WORKERS}_${MAX_WORKERS}_${NUM_CORES_PER_HOST}.pickled ./figure_master_worker_workunits_${FIXED_TASKS}_workers_${MIN_WORKERS}_${MAX_WORKERS}_${NUM_CORES_PER_HOSTS}.pdf
 	@echo "Running experiments for different numbers of tasks"
-	python3 ./run_experiments.py /tmp/results.pickled ${NUM_CORES_PER_HOST} ${FIXED_WORKERS} ${FIXED_WORKERS} 1 ${MIN_TASKS} ${MAX_TASKS} ${STEP_TASKS} ${NUM_TRIALS} ${VERSIONS}
+	python3 ./run_experiments.py /tmp/results.pickled ${NUM_CORES_PER_HOST} ${FIXED_WORKERS} ${FIXED_WORKERS} 1 ${MIN_TASKS} ${MAX_TASKS} ${STEP_TASKS} ${NUM_TRIALS} ${VERSIONS} 1> ./results_master_worker_workunits_${MIN_TASKS}_workers_${MAX_TASKS}_workers_${FIXED_WORKERS}_${NUM_CORES_PER_HOST}.txt
 	cp /tmp/results.pickled ./results_master_worker_workunits_${MIN_TASKS}_workers_${MAX_TASKS}_workers_${FIXED_WORKERS}_${NUM_CORES_PER_HOST}.pickled
 	python3 ./plot_results.py ./results_master_worker_workunits_${MIN_TASKS}_workers_${MAX_TASKS}_workers_${FIXED_WORKERS}_${NUM_CORES_PER_HOST}.pickled ./figure_master_worker_workunits_${MIN_TASKS}_workers_${MAX_TASKS}_workers_${FIXED_WORKERS}_${NUM_CORES_PER_HOSTS}.pdf
 
