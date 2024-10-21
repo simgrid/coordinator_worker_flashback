@@ -53,6 +53,7 @@ run:
 	python3 ./run_experiments.py /tmp/results.pickled ${MIN_NUM_CORES_PER_HOST} ${MAX_NUM_CORES_PER_HOST} ${STEP_NUM_CORES_PER_HOST} ${FIXED_WORKERS} ${FIXED_WORKERS} 1 ${FIXED_TASKS} ${FIXED_TASKS} 1 ${NUM_TRIALS} ${VERSIONS}
 	cp /tmp/results.pickled ./results_master_worker_cores_${MIN_NUM_CORES_PER_HOST}_${MAX_NUM_CORES_PER_HOST}_workunits_${FIXED_TASKS}_${FIXED_TASKS}_workers_${FIXED_WORKERS}_${FIXED_WORKERS}.pickled
 	python3 ./plot_results.py ./results_master_worker_cores_${MIN_NUM_CORES_PER_HOST}_${MAX_NUM_CORES_PER_HOST}_workunits_${FIXED_TASKS}_${FIXED_TASKS}_workers_${FIXED_WORKERS}_${FIXED_WORKERS}.pickled ./results_master_worker_cores_${MIN_NUM_CORES_PER_HOST}_${MAX_NUM_CORES_PER_HOST}_workunits_${FIXED_TASKS}_${FIXED_TASKS}_workers_${FIXED_WORKERS}_${FIXED_TASKS}.pdf 1> ./results_master_worker_cores_${MIN_NUM_CORES_PER_HOST}_${MAX_NUM_CORES_PER_HOST}_workunits_${FIXED_TASKS}_${FIXED_TASKS}_workers_${FIXED_WORKERS}_${FIXED_WORKERS}.txt
+
 clean:
-	/bin/rm -rf build_* *.pdf *.pickled
+	/bin/rm -rf build_* results_*.pdf results_*.pickled results_*.txt
 
