@@ -1,14 +1,15 @@
 .NOTPARALLEL:
 
+NUM_CORES_PER_HOST=8
 MIN_WORKERS=1000
-MAX_WORKERS=30000
+MAX_WORKERS=10000
 STEP_WORKERS=1000
 FIXED_TASKS=10000
 MIN_TASKS=1000
-MAX_TASKS=30000
+MAX_TASKS=10000
 STEP_TASKS=1000
 FIXED_WORKERS=1000
-NUM_TRIALS=10
+NUM_TRIALS=2
 
 VERSIONS=v3_10 v3_36
 
@@ -32,10 +33,14 @@ check:
 
 run: 
 	@echo "Running experiments for different numbers of workers"
-	python3 ./run_experiments.py ${MIN_WORKERS} ${MAX_WORKERS} ${STEP_WORKERS} ${FIXED_TASKS} ${FIXED_TASKS} 1 ${NUM_TRIALS} ${VERSIONS}
+	python3 ./run_experiments.py /tmp/results.pickled ${NUM_CORES_PER_HOST} ${MIN_WORKERS} ${MAX_WORKERS} ${STEP_WORKERS} ${FIXED_TASKS} ${FIXED_TASKS} 1 ${NUM_TRIALS} ${VERSIONS}
+	cp /tmp/results.pickled ./results_master_worker_workunits_${FIXED_TASKS}_workers_${MIN_WORKERS}_${MAX_WORKERS}_${NUM_CORES_PER_HOST}.pickled
+	python3 ./plot_results.py  ./results_master_worker_workunits_${FIXED_TASKS}_workers_${MIN_WORKERS}_${MAX_WORKERS}_${NUM_CORES_PER_HOST}.pickled ./figure_master_worker_workunits_${FIXED_TASKS}_workers_${MIN_WORKERS}_${MAX_WORKERS}_${NUM_CORES_PER_HOSTS}.pdf
 	@echo "Running experiments for different numbers of tasks"
-	python3 ./run_experiments.py ${FIXED_WORKERS} ${FIXED_WORKERS} 1 ${MIN_TASKS} ${MAX_TASKS} ${STEP_TASKS} ${NUM_TRIALS} ${VERSIONS}
+	python3 ./run_experiments.py /tmp/results.pickled ${NUM_CORES_PER_HOST} ${FIXED_WORKERS} ${FIXED_WORKERS} 1 ${MIN_TASKS} ${MAX_TASKS} ${STEP_TASKS} ${NUM_TRIALS} ${VERSIONS}
+	cp /tmp/results.pickled ./results_master_worker_workunits_${MIN_TASKS}_workers_${MAX_TASKS}_workers_${FIXED_WORKERS}_${NUM_CORES_PER_HOST}.pickled
+	python3 ./plot_results.py ./results_master_worker_workunits_${MIN_TASKS}_workers_${MAX_TASKS}_workers_${FIXED_WORKERS}_${NUM_CORES_PER_HOST}.pickled ./figure_master_worker_workunits_${MIN_TASKS}_workers_${MAX_TASKS}_workers_${FIXED_WORKERS}_${NUM_CORES_PER_HOSTS}.pdf
 
 clean:
-	/bin/rm -rf build_* *.pdf
+	/bin/rm -rf build_* *.pdf *.pickled
 
