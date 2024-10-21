@@ -111,23 +111,34 @@ if __name__ == "__main__":
     versions = list(results.keys())
     num_workunits_values = sorted(list(results[versions[0]].keys()))
     num_workers_values = sorted(list(results[versions[0]][num_workunits_values[0]].keys()))
+    num_num_cores_per_host_values = sorted(list(results[versions[0]][num_workunits_values[0]][num_workers_values[0]].keys()))
 
-    if len(num_workers_values) == 1:
+    if len(num_workunits_values) != 1:
         data = {}
         for version in versions:
             # results[version][num_tasks][num_workers] = [0, 0]
             data[version] = {}
             for x in results[version]:
-                data[version][x] = results[version][x][num_workers_values[0]]
+                data[version][x] = results[version][x][num_workers_values[0]][num_num_cores_per_host_values[0]]
         plot_figure(data, "workunits", output_pdf_file)
 
-    elif len(num_workunits_values) == 1:
+    elif len(num_workers_values) != 1:
         data = {}
         for version in versions:
             # results[version][num_tasks][num_workers] = [0, 0]
             data[version] = {}
             for x in results[version][num_workunits_values[0]]:
-                data[version][x] = results[version][num_workunits_values[0]][x]
+                data[version][x] = results[version][num_workunits_values[0]][x][num_num_cores_per_host_values[0]]
         plot_figure(data, "workers", output_pdf_file)
+    elif len(num_num_cores_per_host_values) != 1:
+        data = {}
+        for version in versions:
+            # results[version][num_tasks][num_workers] = [0, 0]
+            data[version] = {}
+            for x in results[version][num_workunits_values[0]][num_workers_values[0]]:
+                data[version][x] = results[version][num_workunits_values[0]][num_workers_values[0]][x]
+        print("HERE")
+        print(data)
+        plot_figure(data, "#cores per host", output_pdf_file)
     else:
-        raise "You can either have multiple worker values or multiple workunit values, but not both"
+        raise "Something went wrong with dimentions..."
