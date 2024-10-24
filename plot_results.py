@@ -59,7 +59,7 @@ def plot_figure(data, x_axis_label, figname):
 
 
     ax1.set_xlim([min(data[versions[0]].keys()), max(data[versions[0]].keys())])
-    ax1.set_xlabel(f"Number of {x_axis_label}", fontsize=fontsize + 3)
+    ax1.set_xlabel(x_axis_label, fontsize=fontsize + 3)
     ax1.set_ylabel("Time (sec)", fontsize=fontsize + 3)
     ax2.set_ylabel("Memory Footprint (MB)", fontsize=fontsize + 3)
 
@@ -121,7 +121,7 @@ if __name__ == "__main__":
             data[version] = {}
             for x in results:
                 data[version][x] = results[x][num_hosts_values[0]][num_num_cores_per_host_values[0]][version]
-        plot_figure(data, "workunits", output_pdf_file)
+        plot_figure(data, "# of workunits", output_pdf_file)
 
     elif len(num_hosts_values) != 1:
         data = {}
@@ -129,13 +129,13 @@ if __name__ == "__main__":
             data[version] = {}
             for x in results[num_workunits_values[0]]:
                 data[version][x] = results[num_workunits_values[0]][x][num_num_cores_per_host_values[0]][version]
-        plot_figure(data, "cores", output_pdf_file)
+        plot_figure(data, f"# of hosts ({num_num_cores_per_host_values[0]} cores / host)", output_pdf_file)
     elif len(num_num_cores_per_host_values) != 1:
         data = {}
         for version in versions:
             data[version] = {}
             for x in results[num_workunits_values[0]][num_hosts_values[0]]:
                 data[version][x] = results[num_workunits_values[0]][num_hosts_values[0]][x][version]
-        plot_figure(data, "#cores per host", output_pdf_file)
+        plot_figure(data, f"# of cores / host ({num_hosts_values[0]} hosts)", output_pdf_file)
     else:
         raise "Something went wrong with dimensions..."
