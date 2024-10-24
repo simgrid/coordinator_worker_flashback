@@ -87,7 +87,7 @@ if __name__ == "__main__":
                 for num_cores_per_host in max_num_cores_per_host_values:
 
                     sys.stderr.write(f"Running {num_workunits} workunits with {num_workers} workers and {num_cores_per_host} cores per host...\n")
-                    num_hosts = int(1 + num_workers)
+                    num_hosts = int(1 + num_workers / num_cores_per_host)
 
                     times = []
                     mems = []
