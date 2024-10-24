@@ -267,7 +267,6 @@ int main(int argc, char *argv[])
     double max_link_bandwidth;
     int route_length;
 
-    int num_workers;
     int num_tasks;
     double min_computation;
     double max_computation;
