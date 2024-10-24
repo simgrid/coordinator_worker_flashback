@@ -127,13 +127,13 @@ if __name__ == "__main__":
             data[version] = {}
             for x in results[version][num_workunits_values[0]]:
                 data[version][x] = results[version][num_workunits_values[0]][x][num_num_cores_per_host_values[0]]
-        plot_figure(data, "workers", output_pdf_file)
-    elif len(num_num_cores_per_host_values) != 1:
-        data = {}
-        for version in versions:
-            data[version] = {}
-            for x in results[version][num_workunits_values[0]][num_workers_values[0]]:
-                data[version][x] = results[version][num_workunits_values[0]][num_workers_values[0]][x]
-        plot_figure(data, "#cores per host", output_pdf_file)
+        plot_figure(data, "cores", output_pdf_file)
+    # elif len(num_num_cores_per_host_values) != 1:
+    #     data = {}
+    #     for version in versions:
+    #         data[version] = {}
+    #         for x in results[version][num_workunits_values[0]][num_workers_values[0]]:
+    #             data[version][x] = results[version][num_workunits_values[0]][num_workers_values[0]][x]
+    #     plot_figure(data, "#cores per host", output_pdf_file)
     else:
         raise "Something went wrong with dimensions..."
