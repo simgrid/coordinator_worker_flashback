@@ -1,24 +1,25 @@
 .NOTPARALLEL:
 
-MIN_NUM_CORES_PER_HOST=4
-MAX_NUM_CORES_PER_HOST=64
+MIN_NUM_CORES_PER_HOST=8
+MAX_NUM_CORES_PER_HOST=60
 STEP_NUM_CORES_PER_HOST=4
 FIXED_NUM_CORES_PER_HOST=8
+FIXED_NUM_HOSTS_FOR_NUM_CORES_EXPERIMENTS=500
 
 MIN=1000
 MAX=30000
 STEP=1000
 
-MIN_WORKERS=${MIN}
-MAX_WORKERS=${MAX}
-STEP_WORKERS=${STEP}
-FIXED_TASKS=${MAX}
-MIN_TASKS=${MIN}
-MAX_TASKS=${MAX}
-STEP_TASKS=${STEP}
-FIXED_WORKERS=${MAX}
+MIN_NUM_HOSTS=${MIN}
+MAX_NUM_HOSTS=${MAX}
+STEP_NUM_HOSTS=${STEP}
+FIXED_WORKUNITS=${MAX}
+MIN_NUM_WORKUNITS=${MIN}
+MAX_NUM_WORKUNITS=${MAX}
+STEP_WORKUNITS=${STEP}
+FIXED_NUM_HOSTS=${MAX}
 
-NUM_TRIALS=10
+NUM_TRIALS=1
 
 VERSIONS=v3_10 v3_36
 
@@ -41,18 +42,18 @@ check:
 	python3 ./check_makespans.py ${VERSIONS}
 
 run: 
-	@echo "Running experiments for different numbers of workers"
-	python3 ./run_experiments.py /tmp/results.pickled ${FIXED_NUM_CORES_PER_HOST} ${FIXED_NUM_CORES_PER_HOST} 1 ${MIN_WORKERS} ${MAX_WORKERS} ${STEP_WORKERS} ${FIXED_TASKS} ${FIXED_TASKS} 1 ${NUM_TRIALS} ${VERSIONS}
-	cp /tmp/results.pickled ./results_master_worker_cores_${FIXED_NUM_CORES_PER_HOST}_${FIXED_NUM_CORES_PER_HOST}_workunits_${FIXED_TASKS}_${FIXED_TASKS}_workers_${MIN_WORKERS}_${MAX_WORKERS}.pickled
-	python3 ./plot_results.py  ./results_master_worker_cores_${FIXED_NUM_CORES_PER_HOST}_${FIXED_NUM_CORES_PER_HOST}_workunits_${FIXED_TASKS}_${FIXED_TASKS}_workers_${MIN_WORKERS}_${MAX_WORKERS}.pickled ./results_master_worker_cores_${FIXED_NUM_CORES_PER_HOST}_${FIXED_NUM_CORES_PER_HOST}_workunits_${FIXED_TASKS}_${FIXED_TASKS}_workers_${MIN_WORKERS}_${MAX_WORKERS}.pdf 1> ./results_master_worker_cores_${FIXED_NUM_CORES_PER_HOST}_${FIXED_NUM_CORES_PER_HOST}_workunits_${MIN_TASKS}_${MAX_TASKS}_workers_${MIN_WORKERS}_${MAX_WORKERS}.txt
-	@echo "Running experiments for different numbers of tasks"
-	python3 ./run_experiments.py /tmp/results.pickled ${FIXED_NUM_CORES_PER_HOST} ${FIXED_NUM_CORES_PER_HOST} 1 ${FIXED_WORKERS} ${FIXED_WORKERS} 1 ${MIN_TASKS} ${MAX_TASKS} ${STEP_TASKS} ${NUM_TRIALS} ${VERSIONS}
-	cp /tmp/results.pickled ./results_master_worker_cores_${FIXED_NUM_CORES_PER_HOST}_${FIXED_NUM_CORES_PER_HOST}_workunits_${MIN_TASKS}_${MAX_TASKS}_workers_${FIXED_WORKERS}_${FIXED_WORKERS}.pickled
-	python3 ./plot_results.py ./results_master_worker_cores_${FIXED_NUM_CORES_PER_HOST}_${FIXED_NUM_CORES_PER_HOST}_workunits_${MIN_TASKS}_${MAX_TASKS}_workers_${FIXED_WORKERS}_${FIXED_WORKERS}.pickled ./results_master_worker_cores_${FIXED_NUM_CORES_PER_HOST}_${FIXED_NUM_CORES_PER_HOST}_workunits_${MIN_TASKS}_${MAX_TASKS}_workers_${FIXED_WORKERS}_${FIXED_TASKS}.pdf 1> ./results_master_worker_cores_${FIXED_NUM_CORES_PER_HOST}_${FIXED_NUM_CORES_PER_HOST}_workunits_${MIN_TASKS}_${MAX_TASKS}_workers_${FIXED_WORKERS}_${FIXED_WORKERS}.txt
-# 	@echo "Running experiments for different numbers of cores per host"
-# 	python3 ./run_experiments.py /tmp/results.pickled ${MIN_NUM_CORES_PER_HOST} ${MAX_NUM_CORES_PER_HOST} ${STEP_NUM_CORES_PER_HOST} ${FIXED_WORKERS} ${FIXED_WORKERS} 1 ${FIXED_TASKS} ${FIXED_TASKS} 1 ${NUM_TRIALS} ${VERSIONS}
-# 	cp /tmp/results.pickled ./results_master_worker_cores_${MIN_NUM_CORES_PER_HOST}_${MAX_NUM_CORES_PER_HOST}_workunits_${FIXED_TASKS}_${FIXED_TASKS}_workers_${FIXED_WORKERS}_${FIXED_WORKERS}.pickled
-# 	python3 ./plot_results.py ./results_master_worker_cores_${MIN_NUM_CORES_PER_HOST}_${MAX_NUM_CORES_PER_HOST}_workunits_${FIXED_TASKS}_${FIXED_TASKS}_workers_${FIXED_WORKERS}_${FIXED_WORKERS}.pickled ./results_master_worker_cores_${MIN_NUM_CORES_PER_HOST}_${MAX_NUM_CORES_PER_HOST}_workunits_${FIXED_TASKS}_${FIXED_TASKS}_workers_${FIXED_WORKERS}_${FIXED_TASKS}.pdf 1> ./results_master_worker_cores_${MIN_NUM_CORES_PER_HOST}_${MAX_NUM_CORES_PER_HOST}_workunits_${FIXED_TASKS}_${FIXED_TASKS}_workers_${FIXED_WORKERS}_${FIXED_WORKERS}.txt
+	@echo "Running experiments for different numbers of hosts"
+	python3 ./run_experiments.py /tmp/results.pickled ${FIXED_NUM_CORES_PER_HOST} ${FIXED_NUM_CORES_PER_HOST} 1 ${MIN_NUM_HOSTS} ${MAX_NUM_HOSTS} ${STEP_NUM_HOSTS} ${FIXED_WORKUNITS} ${FIXED_WORKUNITS} 1 ${NUM_TRIALS} ${VERSIONS}
+	cp /tmp/results.pickled ./results_master_worker_hosts_${MIN_NUM_HOSTS}_${MAX_NUM_HOSTS}_cores_${FIXED_NUM_CORES_PER_HOST}_${FIXED_NUM_CORES_PER_HOST}_workunits_${FIXED_WORKUNITS}_${FIXED_WORKUNITS}.pickled
+	python3 ./plot_results.py  ./results_master_worker_hosts_${MIN_NUM_HOSTS}_${MAX_NUM_HOSTS}_cores_${FIXED_NUM_CORES_PER_HOST}_${FIXED_NUM_CORES_PER_HOST}_workunits_${FIXED_WORKUNITS}_${FIXED_WORKUNITS}.pickled ./results_master_worker_hosts_${MIN_NUM_HOSTS}_${MAX_NUM_HOSTS}_cores_${FIXED_NUM_CORES_PER_HOST}_${FIXED_NUM_CORES_PER_HOST}_workunits_${FIXED_WORKUNITS}_${FIXED_WORKUNITS}.pdf 1> ./results_master_worker_hosts_${MIN_NUM_HOSTS}_${MAX_NUM_HOSTS}_cores_${FIXED_NUM_CORES_PER_HOST}_${FIXED_NUM_CORES_PER_HOST}_workunits_${MIN_NUM_WORKUNITS}_${MAX_NUM_WORKUNITS}.txt
+	@echo "Running experiments for different numbers of workunits"
+	python3 ./run_experiments.py /tmp/results.pickled ${FIXED_NUM_CORES_PER_HOST} ${FIXED_NUM_CORES_PER_HOST} 1 ${FIXED_NUM_HOSTS} ${FIXED_NUM_HOSTS} 1 ${MIN_NUM_WORKUNITS} ${MAX_NUM_WORKUNITS} ${STEP_WORKUNITS} ${NUM_TRIALS} ${VERSIONS}
+	cp /tmp/results.pickled ./results_master_worker_hosts_${FIXED_NUM_HOSTS}_${FIXED_NUM_HOSTS}_cores_${FIXED_NUM_CORES_PER_HOST}_${FIXED_NUM_CORES_PER_HOST}_workunits_${MIN_NUM_WORKUNITS}_${MAX_NUM_WORKUNITS}.pickled
+	python3 ./plot_results.py ./results_master_worker_hosts_${FIXED_NUM_HOSTS}_${FIXED_NUM_HOSTS}_cores_${FIXED_NUM_CORES_PER_HOST}_${FIXED_NUM_CORES_PER_HOST}_workunits_${MIN_NUM_WORKUNITS}_${MAX_NUM_WORKUNITS}.pickled ./results_master_worker_hosts_${FIXED_NUM_HOSTS}_${FIXED_WORKUNITS}_cores_${FIXED_NUM_CORES_PER_HOST}_${FIXED_NUM_CORES_PER_HOST}_workunits_${MIN_NUM_WORKUNITS}_${MAX_NUM_WORKUNITS}.pdf 1> ./results_master_worker_hosts_${FIXED_NUM_HOSTS}_${FIXED_NUM_HOSTS}_cores_${FIXED_NUM_CORES_PER_HOST}_${FIXED_NUM_CORES_PER_HOST}_workunits_${MIN_NUM_WORKUNITS}_${MAX_NUM_WORKUNITS}.txt
+	@echo "Running experiments for different numbers of cores per host"
+	python3 ./run_experiments.py /tmp/results.pickled ${MIN_NUM_CORES_PER_HOST} ${MAX_NUM_CORES_PER_HOST} ${STEP_NUM_CORES_PER_HOST} ${FIXED_NUM_HOSTS_FOR_NUM_CORES_EXPERIMENTS} ${FIXED_NUM_HOSTS_FOR_NUM_CORES_EXPERIMENTS} 1 ${FIXED_WORKUNITS} ${FIXED_WORKUNITS} 1 ${NUM_TRIALS} ${VERSIONS}
+	cp /tmp/results.pickled ./results_master_worker_hosts_${FIXED_NUM_HOSTS_FOR_NUM_CORES_EXPERIMENTS}_${FIXED_NUM_HOSTS_FOR_NUM_CORES_EXPERIMENTS}_cores_${MIN_NUM_CORES_PER_HOST}_${MAX_NUM_CORES_PER_HOST}_workunits_${FIXED_WORKUNITS}_${FIXED_WORKUNITS}.pickled
+	python3 ./plot_results.py ./results_master_worker_hosts_${FIXED_NUM_HOSTS_FOR_NUM_CORES_EXPERIMENTS}_${FIXED_NUM_HOSTS_FOR_NUM_CORES_EXPERIMENTS}_cores_${MIN_NUM_CORES_PER_HOST}_${MAX_NUM_CORES_PER_HOST}_workunits_${FIXED_WORKUNITS}_${FIXED_WORKUNITS}.pickled ./results_master_worker_hosts_${FIXED_NUM_HOSTS_FOR_NUM_CORES_EXPERIMENTS}_${FIXED_NUM_HOSTS}_cores_${MIN_NUM_CORES_PER_HOST}_${MAX_NUM_CORES_PER_HOST}_workunits_${FIXED_WORKUNITS}_${FIXED_WORKUNITS}.pdf 1> ./results_master_worker_hosts_${FIXED_NUM_HOSTS_FOR_NUM_CORES_EXPERIMENTS}_${FIXED_NUM_HOSTS_FOR_NUM_CORES_EXPERIMENTS}_cores_${MIN_NUM_CORES_PER_HOST}_${MAX_NUM_CORES_PER_HOST}_workunits_${FIXED_WORKUNITS}_${FIXED_WORKUNITS}.txt
 
 clean:
 	/bin/rm -rf build_* results_*.pdf results_*.pickled results_*.txt

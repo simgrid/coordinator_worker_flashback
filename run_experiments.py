@@ -11,9 +11,9 @@ if __name__ == "__main__":
         min_num_cores_per_host = int(sys.argv[2])
         max_num_cores_per_host = int(sys.argv[3])
         step_num_cores_per_host = int(sys.argv[4])
-        min_num_workers = int(sys.argv[5])
-        max_num_workers = int(sys.argv[6])
-        step_num_workers = int(sys.argv[7])
+        min_num_hosts = int(sys.argv[5])
+        max_num_hosts = int(sys.argv[6])
+        step_num_hosts = int(sys.argv[7])
         min_num_workunits = int(sys.argv[8])
         max_num_workunits = int(sys.argv[9])
         step_num_workunits = int(sys.argv[10])
@@ -21,7 +21,7 @@ if __name__ == "__main__":
     except Exception:
         sys.stderr.write(
             f"Usage: {sys.argv[0]} <pickle file name for results> <min num cores per host> <max num cores per host> "
-            f"<stp num cores per host> <min num workers (int)> <max num workers (int)> <step num workers (int)> "
+            f"<stp num cores per host> <min num hosts (int)> <max num hosts (int)> <step num hosts (int)> "
             f"<min num workunits (int)> <max num workunits (int) <step num workunits (int)> "
             f"<num trials (int)> <version> ... <version>\n")
         sys.exit(1)
@@ -69,31 +69,27 @@ if __name__ == "__main__":
     #"--cfg=contexts/stack-size:{stack_size_in_kb}"
 
     results = {}
-    for version in versions:
-        results[version] = {}
 
-    max_num_cores_per_host_values = range(min_num_cores_per_host, max_num_cores_per_host+1, step_num_cores_per_host)
-    num_workers_values = range(min_num_workers, max_num_workers + 1, step_num_workers)
-    num_workunits_values = range(min_num_workunits, max_num_workunits + 1, step_num_workunits)
+    num_cores_per_host_values = list(range(min_num_cores_per_host, max_num_cores_per_host+1, step_num_cores_per_host))
+    num_hosts_values = list(range(min_num_hosts, max_num_hosts + 1, step_num_hosts))
+    num_workunits_values = list(range(min_num_workunits, max_num_workunits + 1, step_num_workunits))
 
-    if len(num_workers_values) > 1 and len(num_workunits_values) > 1:
-        raise "You can either have multiple worker values or multiple workunit values, but not both"
+    if len(num_hosts_values) + len(num_workunits_values) + len(num_cores_per_host_values) > 2 + max([len(num_hosts_values), len(num_workunits_values), len(num_cores_per_host_values)]):
+        raise "Only one dimension can be varying"
 
-    for version in versions:
-        for num_workunits in num_workunits_values:
-            results[version][num_workunits] = {}
-            for num_workers in num_workers_values:
-                results[version][num_workunits][num_workers] = {}
-                for num_cores_per_host in max_num_cores_per_host_values:
-
-                    num_hosts = int(1 + num_workers / num_cores_per_host)
-                    sys.stderr.write(f"Running {num_workunits} workunits with {num_workers} workers running on {num_hosts} {num_cores_per_host}-core hosts...\n")
+    for num_workunits in num_workunits_values:
+        results[num_workunits] = {}
+        for num_hosts in num_hosts_values:
+            results[num_workunits][num_hosts] = {}
+            for num_cores_per_host in num_cores_per_host_values:
+                results[num_workunits][num_hosts][num_cores_per_host] = {}
+                for version in versions:
 
                     times = []
                     mems = []
                     for seed in range(0, num_trials):
 
-                        command = f"docker run -it --rm -w /home/simgrid/build_simgrid_{version}/ -v `pwd`:/home/simgrid simgrid_{version} /usr/bin/time -v ./master_worker_{version} {num_hosts} {num_cores_per_host} {min_core_speed} {max_core_speed} {num_links} {min_bandwidth} {max_bandwidth} {route_length} {num_workers} {num_workunits} {min_computation} {max_computation} {min_data_size} {max_data_size} {seed} --log=root.thresh:critical {energy_plugins[version]}"
+                        command = f"docker run -it --rm -w /home/simgrid/build_simgrid_{version}/ -v `pwd`:/home/simgrid simgrid_{version} /usr/bin/time -v ./master_worker_{version} {num_hosts} {num_cores_per_host} {min_core_speed} {max_core_speed} {num_links} {min_bandwidth} {max_bandwidth} {route_length} {num_workunits} {min_computation} {max_computation} {min_data_size} {max_data_size} {seed} --log=root.thresh:critical {energy_plugins[version]}"
                         # print(command)
 
                         try:
@@ -112,12 +108,12 @@ if __name__ == "__main__":
                                 rss_size = float(tokens[-1]) / 1024.0
                         times.append(elapsed_time)
                         mems.append(rss_size)
-                        sys.stderr.write(f"Version: {version}  Time: {elapsed_time}   RSS: {rss_size}\n")
+                        sys.stderr.write(f"{num_workunits} workunits with {num_hosts} {num_cores_per_host}-core hosts: Version {version}  Time: {elapsed_time}   RSS: {rss_size}\n")
 
                     if len(times) == 0 or len(mems) == 0:
-                        results[version][num_workunits][num_workers][num_cores_per_host] = [0, 0]
+                        results[num_workunits][num_hosts][num_cores_per_host][version] = [0, 0]
                     else:
-                        results[version][num_workunits][num_workers][num_cores_per_host] = [times, mems]
+                        results[num_workunits][num_hosts][num_cores_per_host][version] = [times, mems]
 
     print(results)
     with open(pickle_file_name, 'wb') as f:

@@ -108,32 +108,34 @@ if __name__ == "__main__":
     with open(pickle_file_name, 'rb') as file:
         results = pickle.load(file)
 
-    versions = list(results.keys())
-    num_workunits_values = sorted(list(results[versions[0]].keys()))
-    num_workers_values = sorted(list(results[versions[0]][num_workunits_values[0]].keys()))
-    num_num_cores_per_host_values = sorted(list(results[versions[0]][num_workunits_values[0]][num_workers_values[0]].keys()))
+    # results[num_workunits][num_hosts][num_cores_per_host][version] = [times, mems]
+    print(results)
+    num_workunits_values = sorted(list(results.keys()))
+    num_hosts_values = sorted(list(results[num_workunits_values[0]].keys()))
+    num_num_cores_per_host_values = sorted(list(results[num_workunits_values[0]][num_hosts_values[0]].keys()))
+    versions = sorted(list(results[num_workunits_values[0]][num_hosts_values[0]][num_num_cores_per_host_values[0]].keys()))
 
     if len(num_workunits_values) != 1:
         data = {}
         for version in versions:
             data[version] = {}
-            for x in results[version]:
-                data[version][x] = results[version][x][num_workers_values[0]][num_num_cores_per_host_values[0]]
+            for x in results:
+                data[version][x] = results[x][num_hosts_values[0]][num_num_cores_per_host_values[0]][version]
         plot_figure(data, "workunits", output_pdf_file)
 
-    elif len(num_workers_values) != 1:
+    elif len(num_hosts_values) != 1:
         data = {}
         for version in versions:
             data[version] = {}
-            for x in results[version][num_workunits_values[0]]:
-                data[version][x] = results[version][num_workunits_values[0]][x][num_num_cores_per_host_values[0]]
+            for x in results[num_workunits_values[0]]:
+                data[version][x] = results[num_workunits_values[0]][x][num_num_cores_per_host_values[0]][version]
         plot_figure(data, "cores", output_pdf_file)
-    # elif len(num_num_cores_per_host_values) != 1:
-    #     data = {}
-    #     for version in versions:
-    #         data[version] = {}
-    #         for x in results[version][num_workunits_values[0]][num_workers_values[0]]:
-    #             data[version][x] = results[version][num_workunits_values[0]][num_workers_values[0]][x]
-    #     plot_figure(data, "#cores per host", output_pdf_file)
+    elif len(num_num_cores_per_host_values) != 1:
+        data = {}
+        for version in versions:
+            data[version] = {}
+            for x in results[num_workunits_values[0]][num_hosts_values[0]]:
+                data[version][x] = results[num_workunits_values[0]][num_hosts_values[0]][x][version]
+        plot_figure(data, "#cores per host", output_pdf_file)
     else:
         raise "Something went wrong with dimensions..."

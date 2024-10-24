@@ -181,7 +181,7 @@ void create_platform_file(std::string filepath,
 
 void create_deployment_file(std::string filepath,
                             int num_hosts,
-                            int num_workers,
+                            int num_cores_per_host,
                             int num_tasks,
                             double min_computation,
                             double max_computation,
@@ -201,12 +201,12 @@ void create_deployment_file(std::string filepath,
     fprintf(df, "    <argument value=\"%.2lf\" />\n", max_computation * 1000000.0);
     fprintf(df, "    <argument value=\"%.2lf\" />\n", min_data_size * 1000000.0);
     fprintf(df, "    <argument value=\"%.2lf\" />\n", max_data_size * 1000000.0);
-    fprintf(df, "    <argument value=\"%d\" />\n", num_workers);
+    fprintf(df, "    <argument value=\"%d\" />\n", num_hosts * num_cores_per_host);
     fprintf(df, "  </actor>\n");
 
     // Create worker processes
     int current_worker_host_index = 0;
-    for (int i=0; i < num_workers; i++) {
+    for (int i=0; i < num_hosts * num_cores_per_host; i++) {
         fprintf(df, "  <actor host=\"WorkerHost-%d\" function=\"worker\">\n", current_worker_host_index);
         fprintf(df, "     <argument value=\"%d\" />\n", i);
         fprintf(df, "  </actor>\n");
@@ -224,7 +224,7 @@ void create_deployment_file(std::string filepath,
 int main(int argc, char* argv[])
 {
     sg4::Engine e(&argc, argv);
-    xbt_assert(argc == 16, "Usage: %s <#hosts> <#cores per host> <min core speed (Mf)> <max core speed (Mf)> <#links> <bandwidth min (MBps)> <bandwidth max (MBps)> <route length> <#workers> <#tasks> <min computation (Mf)> <max computation (Mf)> <min data size (MB)> <max data size (MB)> <seed>\n", argv[0]);
+    xbt_assert(argc == 15, "Usage: %s <#hosts> <#cores per host> <min core speed (Mf)> <max core speed (Mf)> <#links> <bandwidth min (MBps)> <bandwidth max (MBps)> <route length> <#tasks> <min computation (Mf)> <max computation (Mf)> <min data size (MB)> <max data size (MB)> <seed>\n", argv[0]);
 
     // Parse commandline arguments
     int num_hosts;
@@ -253,13 +253,12 @@ int main(int argc, char* argv[])
     xbt_assert(sscanf(argv[6], "%lf", &min_link_bandwidth) == 1, "Invalid <min link bandwidth (MB)> argument");
     xbt_assert(sscanf(argv[7], "%lf", &max_link_bandwidth) == 1, "Invalid <max link bandwidth (MB)> argument");
     xbt_assert(sscanf(argv[8], "%d", &route_length) == 1, "Invalid <route length> argument");
-    xbt_assert(sscanf(argv[9], "%d", &num_workers) == 1, "Invalid <#workers> argument");
-    xbt_assert(sscanf(argv[10], "%d", &num_tasks) == 1, "Invalid <#tasks> argument");
-    xbt_assert(sscanf(argv[11], "%lf", &min_computation) == 1, "Invalid <min computation (Mf)> argument");
-    xbt_assert(sscanf(argv[12], "%lf", &max_computation) == 1, "Invalid <max computation (Mf)> argument");
-    xbt_assert(sscanf(argv[13], "%lf", &min_data_size) == 1, "Invalid <min data size (MB)> argument");
-    xbt_assert(sscanf(argv[14], "%lf", &max_data_size) == 1, "Invalid <max data size (MB)> argument");
-    xbt_assert(sscanf(argv[15], "%d", &seed) == 1, "Invalid <seed> argument");
+    xbt_assert(sscanf(argv[9], "%d", &num_tasks) == 1, "Invalid <#tasks> argument");
+    xbt_assert(sscanf(argv[10], "%lf", &min_computation) == 1, "Invalid <min computation (Mf)> argument");
+    xbt_assert(sscanf(argv[11], "%lf", &max_computation) == 1, "Invalid <max computation (Mf)> argument");
+    xbt_assert(sscanf(argv[12], "%lf", &min_data_size) == 1, "Invalid <min data size (MB)> argument");
+    xbt_assert(sscanf(argv[13], "%lf", &max_data_size) == 1, "Invalid <max data size (MB)> argument");
+    xbt_assert(sscanf(argv[14], "%d", &seed) == 1, "Invalid <seed> argument");
 
 
     xbt_assert(route_length <= num_links, "The <route length> argument cannot be larger than the <#links> argument");
@@ -271,7 +270,7 @@ int main(int argc, char* argv[])
     std::string platform_file="/tmp/platform_master_worker.xml";
     std::string deployment_file="/tmp/platform_master_worker_d.xml";
     create_platform_file(platform_file, num_hosts, num_cores_per_host, min_core_speed, max_core_speed, num_links, min_link_bandwidth, max_link_bandwidth, route_length);
-    create_deployment_file(deployment_file, num_hosts, num_workers, num_tasks, min_computation, max_computation, min_data_size, max_data_size);
+    create_deployment_file(deployment_file, num_hosts, num_cores_per_host, num_tasks, min_computation, max_computation, min_data_size, max_data_size);
 
     /* Register the functions representing the actors */
     e.register_function("master", &master);
