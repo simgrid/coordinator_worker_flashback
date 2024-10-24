@@ -58,7 +58,7 @@ XP3_STEP_NUM_CORES_PER_HOST=4
 
 run_core_experiment:
 	@echo "Running experiments for different numbers of cores per host"
-	python3 ./run_experiments.py /tmp/results.pickled ${XP3_MIN_NUM_CORES_PER_HOST} ${XP3_MAX_NUM_CORES_PER_HOST} ${XP3_STEP_NUM_CORES_PER_HOST} ${XP3_NUM_HOSTS_FOR_NUM_CORES_EXPERIMENTS} ${XP3_NUM_HOSTS_FOR_NUM_CORES_EXPERIMENTS} 1 ${XP3_NUM_WORKUNITS} ${XP3_NUM_WORKUNITS} 1 ${NUM_TRIALS} ${VERSIONS}
+	python3 ./run_experiments.py /tmp/results.pickled ${XP3_MIN_NUM_CORES_PER_HOST} ${XP3_MAX_NUM_CORES_PER_HOST} ${XP3_STEP_NUM_CORES_PER_HOST} ${XP3_NUM_HOSTS} ${XP3_NUM_HOSTS} 1 ${XP3_NUM_WORKUNITS} ${XP3_NUM_WORKUNITS} 1 ${NUM_TRIALS} ${VERSIONS}
 	cp /tmp/results.pickled ./results_master_worker_hosts_${XP3_NUM_HOSTS}_${XP3_NUM_HOSTS}_cores_${XP3_MIN_NUM_CORES_PER_HOST}_${XP3_MAX_NUM_CORES_PER_HOST}_workunits_${XP3_NUM_WORKUNITS}_${XP3_NUM_WORKUNITS}.pickled
 	python3 ./plot_results.py ./results_master_worker_hosts_${XP3_NUM_HOSTS}_${XP3_NUM_HOSTS}_cores_${XP3_MIN_NUM_CORES_PER_HOST}_${XP3_MAX_NUM_CORES_PER_HOST}_workunits_${XP3_NUM_WORKUNITS}_${XP3_NUM_WORKUNITS}.pickled ./results_master_worker_hosts_${XP3_NUM_HOSTS}_${XP3_NUM_HOSTS}_cores_${XP3_MIN_NUM_CORES_PER_HOST}_${XP3_MAX_NUM_CORES_PER_HOST}_workunits_${XP3_NUM_WORKUNITS}_${XP3_NUM_WORKUNITS}.pdf 1> ./results_master_worker_hosts_${XP3_NUM_HOSTS}_${XP3_NUM_HOSTS}_cores_${XP3_MIN_NUM_CORES_PER_HOST}_${XP3_MAX_NUM_CORES_PER_HOST}_workunits_${XP3_NUM_WORKUNITS}_${XP3_NUM_WORKUNITS}.txt
 
